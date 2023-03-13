@@ -1,0 +1,2 @@
+1. Image.show() --> opens the image using photos app
+2. width, height = im.size

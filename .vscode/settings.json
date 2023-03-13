@@ -1,0 +1,5 @@
+{
+    // this is to inform python that this path contains modules that we may want to import
+    //so that vs code doesnt give warning while editing
+    "python.analysis.extraPaths": ["${workspaceFolder}/scripts/modules"]
+}
