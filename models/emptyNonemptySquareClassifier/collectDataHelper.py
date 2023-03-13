@@ -1,7 +1,8 @@
 # ======================================OBJECTIVE====================================
 # for all board images in "data/trainingData/allImages", extract the squares with the pieces
 # and 2 rows of empty squares
-# save them in "data/trainingData/emptyNonemptySquares/emptySquares" and "data/trainingData/emptyNonemptySquares/nonemptySquares"
+# save them in "models/emptyNonemptySquareClassifier/data/trainingData/images/emptySquares"
+# and "models/emptyNonemptySquareClassifier/data/trainingData/images/nonemptySquares"
 # ===================================================================================
 
 
@@ -25,15 +26,15 @@ from PIL import Image
 
 
 sourcePath = "data/trainingData/allImages"
-emptySquareDestPath = "data/trainingData/emptyNonemptySquares/emptySquares"
-nonemptySquareDestPath = "data/trainingData/emptyNonemptySquares/nonemptySquares"
+emptySquareDestPath = "models/emptyNonemptySquareClassifier/data/trainingData/images/emptySquares"
+nonemptySquareDestPath = "models/emptyNonemptySquareClassifier/data/trainingData/images/nonemptySquares"
 
 
 print("Copying images from \'" + sourcePath + "\' ........")
 
 
 sourceDirectory = os.fsencode(sourcePath)
-pieceTypeCounter = 0
+pieceSetCount = 0
 for file in os.listdir(sourceDirectory):
     fileName = os.fsdecode(file)
     if ( fileName.endswith(".jpg") or fileName.endswith(".png") ) :                 
@@ -51,7 +52,7 @@ for file in os.listdir(sourceDirectory):
                 
                 resizedImage = squares[i][j]
 
-                fileName = f'{pieceTypeCounter}_{i}_{j}.png'
+                fileName = f'{pieceSetCount}_{i}_{j}.png'
 
                 # only save the pieces on first 5 columns of 0-th and last row
                 # and 2 pawns for each color
@@ -61,7 +62,7 @@ for file in os.listdir(sourceDirectory):
                 elif  (i == 2 or i == 3):
                     resizedImage.save(f"{emptySquareDestPath}/{fileName}")
 
-    pieceTypeCounter = pieceTypeCounter + 1
+    pieceSetCount = pieceSetCount + 1
 
 
 

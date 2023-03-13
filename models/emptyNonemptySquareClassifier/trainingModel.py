@@ -1,10 +1,10 @@
 # ======================================OBJECTIVE====================================
 #
-# using  square images (with or without pieces) in "data/trainingData/emptyNonemptySquares/emptySquares" 
-# and "data/trainingData/emptyNonemptySquares/nonemptySquares", train a model to detect if a given square image 
+# using  square images (with or without pieces) in "models/emptyNonemptySquareClassifier/data/trainingData/images/emptySquares"
+# and "models/emptyNonemptySquareClassifier/data/trainingData/images/nonemptySquares", train a model to detect if a given square image 
 # is empty or it contains a piece  
 #
-# Store the trained model in "trainedModels/emptyNonemptySquareClassifier/model.p"
+# Store the trained model in "models/emptyNonemptySquareClassifier/trainedModel.p"
 #
 # ===================================================================================
 
@@ -27,9 +27,9 @@ import time
 
 
 
-emptySquareSourcePath =    "data/trainingData/emptyNonemptySquares/emptySquares"
-nonemptySquareSourcePath = "data/trainingData/emptyNonemptySquares/nonemptySquares"
-trainedModelDestPath = "trainedModel/emptyNonemptySquareClassifier/model.p"
+emptySquareSourcePath =    "models/emptyNonemptySquareClassifier/data/trainingData/images/emptySquares"
+nonemptySquareSourcePath = "models/emptyNonemptySquareClassifier/data/trainingData/images/nonemptySquares"
+trainedModelDestPath = "models/emptyNonemptySquareClassifier/trainedModel.p"
 
 
 resizedImageDimension = (20, 20)

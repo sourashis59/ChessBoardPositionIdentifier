@@ -1,6 +1,6 @@
 # ======================================OBJECTIVE====================================
 #
-# predict output for data using the models in "trainedModel"
+# predict output for data using the models in "trainedModel.p"
 # 
 # ===================================================================================
 
@@ -19,7 +19,7 @@ import pickle
 
 
 
-emptyNonemptySquareClassifier = pickle.load(open('trainedModel/emptyNonemptySquareClassifier/model.p', 'rb'))
+classifier = pickle.load(open('models/emptyNonemptySquareClassifier/trainedModel.p', 'rb'))
 
 squareTypes = ['empty', 'non-empty']
 
@@ -27,7 +27,7 @@ data = []
 images = []
 imageFileNames = []
 
-filePath = 'data/testData/emptyNonemptySquares'
+filePath = 'models/emptyNonemptySquareClassifier/data/testData'
 
 for file in os.listdir(filePath):
     imagePath = os.path.join(filePath, file)
@@ -62,7 +62,7 @@ allVerdictCorrect = True
 for i in range(len(data)):
     # images[i].show()
 
-    pred = emptyNonemptySquareClassifier.predict([data[i]])
+    pred = classifier.predict([data[i]])
     verdict = "NULL"
     if( imageFileNames[i].startswith(squareTypes[pred[0]]) ) :
         verdict = "correct" 
