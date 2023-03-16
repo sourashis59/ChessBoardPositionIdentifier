@@ -9,6 +9,7 @@
 from PIL import Image
 from skimage.io import imread
 from skimage.transform import resize
+from skimage.color import rgba2rgb
 import os
 import numpy as np
 from sklearn.metrics import accuracy_score
@@ -40,6 +41,11 @@ for file in os.listdir(filePath):
 
 
     image = imread(imagePath)
+
+    # if image is of type RGBA (contains an extra channel : alpha channel), remove the Alpha channel
+    if(len(image[0][0]) == 4):
+        image = rgba2rgb(image)
+
     images.append(Image.open(imagePath))
 
     image = resize(image, (20, 20))
@@ -55,7 +61,7 @@ data = np.asarray(data)
 
 
 print(f"images len = {len(images)}")
-# images[40].show()
+images[0].resize((100,100)).show()
 
 
 wrongVerdictCount = 0 
@@ -69,7 +75,7 @@ for i in range(len(data)):
     if( pieceTypes[pred[0]] in imageFileNames[i]  ) :
         verdict = "correct" 
     else :
-        images[i].show()
+        # images[i].show()
 
         verdict = "wrong"    
         wrongVerdictCount = wrongVerdictCount + 1

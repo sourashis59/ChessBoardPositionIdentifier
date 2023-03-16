@@ -12,6 +12,7 @@ import pickle
 
 from skimage.io import imread
 from skimage.transform import resize
+from skimage.color import rgba2rgb
 import numpy as np
 
 
@@ -24,11 +25,12 @@ squareTypes = ['empty', 'non-empty']
 blackOrWhitePieceClassifier = pickle.load(open("scripts/main/trainedModels/blackOrWhitePieceClassifier/trainedModel.p" , 'rb'))
 pieceColors = ['white', 'black']
 
-pieceTypeClassifier = pickle.load(open("scripts/main/trainedModels/pieceTypeClassifier/trainedModel.p" , 'rb'))
+# pieceTypeClassifier = pickle.load(open("scripts/main/trainedModels/pieceTypeClassifier/trainedModel.p" , 'rb'))
+pieceTypeClassifier = pickle.load(open("scripts/main/trainedModels/pieceTypeClassifier/onekBoroData/trainedModel.p" , 'rb'))
 pieceTypes = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn']
 
 
-sourceImagePath = "scripts/main/test/image7.png"
+sourceImagePath = "scripts/main/test/image2.png"
 
 
 
@@ -48,9 +50,16 @@ for i in range(len(squares)) :
         squares[i][j].save("scripts/main/temp/tempSquareImage.png")
         squareImage = imread("scripts/main/temp/tempSquareImage.png")
 
+        
+
         squareImage = resize(squareImage, (20, 20))
         data.append(squareImage.flatten())
         data = np.asarray(data)
+
+        # if image is of type RGBA (contains an extra channel : alpha channel), remove the Alpha channel
+        squareImageForPieceTypeClassifier = None
+        if(len(squareImage[0][0]) == 4):
+            squareImageForPieceTypeClassifier = rgba2rgb(squareImage)
 
 
         # check if square contains any piece
@@ -60,7 +69,7 @@ for i in range(len(squares)) :
             # print("empty")
         else :
             currPieceColor = pieceColors[ (blackOrWhitePieceClassifier.predict([data[0]]))[0] ]
-            currPieceType = pieceTypes[ (pieceTypeClassifier.predict( [data[0]] ) )[0] ]
+            currPieceType = pieceTypes[ (pieceTypeClassifier.predict( [squareImageForPieceTypeClassifier.flatten()] ) )[0] ]
 
             
             currPieceString = f"{currPieceColor[0]}"

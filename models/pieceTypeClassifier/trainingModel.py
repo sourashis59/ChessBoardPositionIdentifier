@@ -15,7 +15,7 @@
 from PIL import Image
 from skimage.io import imread
 from skimage.transform import resize
-from skimage.color import rgb2gray
+from skimage.color import rgb2gray, rgba2rgb
 import os
 import numpy as np
 from sklearn.metrics import accuracy_score
@@ -28,7 +28,8 @@ import time
 
 pieceTypes = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn']
 
-sourcePath = "models/pieceTypeClassifier/data/trainingData/images"
+# sourcePath = "models/pieceTypeClassifier/data/trainingData/images"
+sourcePath = "data/trainingData/pieceImages/myData"
 trainedModelDestPath = "models/pieceTypeClassifier/trainedModel.p"
 
 
@@ -39,6 +40,21 @@ resizedImageDimension = (20, 20)
 # ============================================================================================
 # ====================================== PREPARE DATA ========================================
 # ============================================================================================
+
+# COUNT NO. OF DATA
+
+totalDataCount = 0
+for pieceTypeInd, pieceType in enumerate(pieceTypes) :
+    filePath = f"{sourcePath}/{pieceType}"
+    totalDataCount += len([name for name in os.listdir(filePath) if os.path.isfile(os.path.join(filePath, name))])
+
+print(f"Total Data Count = {totalDataCount}\n\n")
+
+
+
+
+
+
 print("Preparing data.......")
 startTime = time.process_time()
 
@@ -56,6 +72,10 @@ for pieceTypeInd, pieceType in enumerate(pieceTypes) :
         # data.append( list(image.getdata()) )
         
         image = imread(imagePath)
+
+        # if image is of type RGBA (contains an extra channel : alpha channel), remove the Alpha channel
+        if(len(image[0][0]) == 4):
+            image = rgba2rgb(image)
         
         # # make image black and white
         # # Only convert image to grayscale if it is RGB
@@ -69,13 +89,20 @@ for pieceTypeInd, pieceType in enumerate(pieceTypes) :
         labels.append(pieceTypeInd)
 
 
+        # show how much (percentage) data is read till now
+        if(len(data) % 10000 == 0) :
+            print(f"Data reading done : {int(100 * (len(data) / totalDataCount))} %")
+
 
 data = np.asarray(data)
 labels = np.asarray(labels)
 
-
 # nsamples, nx, ny = data.shape
 # data = data.reshape((nsamples,nx*ny))
+
+
+pickle.dump(data, open( "data/trainingData/pieceImages/pieceTypeData.p" , 'wb'))
+pickle.dump(labels, open( "data/trainingData/pieceImages/pieceTypeLabels.p" , 'wb'))
 
 
 
