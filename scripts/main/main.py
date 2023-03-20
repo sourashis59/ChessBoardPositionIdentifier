@@ -19,6 +19,10 @@ import numpy as np
 
 
 
+sourceImagePath = "scripts/main/test/image4.png"
+
+
+
 emptyNonemptySquareClassifier = pickle.load(open("scripts/main/trainedModels/emptyNonemptySquareClassifier/trainedModel.p" , 'rb')) 
 squareTypes = ['empty', 'non-empty']
 
@@ -30,7 +34,6 @@ pieceTypeClassifier = pickle.load(open("scripts/main/trainedModels/pieceTypeClas
 pieceTypes = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn']
 
 
-sourceImagePath = "scripts/main/test/image2.png"
 
 
 
