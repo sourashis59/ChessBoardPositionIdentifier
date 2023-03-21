@@ -101,7 +101,7 @@ print(f"saved imageCount = {imageCount}\n\n\n\n\n\n\n\n\n\n\n\n")
 
 # we will get maxKaggleDataCount data from kaggle data 
 kaggleDataCount = 0
-maxKaggleDataCount = 4000
+maxKaggleDataCount = 15000
 
 sourceDirectory = os.fsencode(kaggleDataSourcePath)
 for file in os.listdir(sourceDirectory):

@@ -44,7 +44,7 @@ collabSourcePath = ""
 # classifier = pickle.load(open('models/emptyNonemptySquareClassifier/trainedModel.p', 'rb'))
 classifier = load_model( os.path.join(collabSourcePath, "models/emptyNonemptySquareClassifier/trainedModelCNN.h5") )
 
-squareTypes = ['empty', 'non-empty']
+classes = ['emptySquare', 'nonemptySquare']
 
 data = []
 images = []
@@ -86,8 +86,10 @@ for file in os.listdir(filePath):
 print(f"images len = {len(images)}")
 # images[40].show()
 
-
+wrongGuesses = 0
 allVerdictCorrect = True
+wrongGuessFiles = []
+
 for i in range(len(data)):
     # images[i].show()
     
@@ -99,32 +101,58 @@ for i in range(len(data)):
     # plt.show()
 
     # # pred = classifier.predict([data[i]])
-    pred = classifier.predict(transformedData)
+
+    #* it will return batch(of size 1) of predicted probabilities of classes(2 classes here)
+    #* for example : pred = [[9.999664e-01 3.858412e-06]] 
+    pred = classifier.predict(transformedData) 
     # print(pred)
 
     verdict = "NULL"
 
-    # predSquareType = np.argmax(pred[0])
-    predSquareType = "NULL"
-    if(pred[0][0] < 0.5) :
-        predSquareType = 0
-    else:
-        predSquareType = 1         
+    predSquareType = np.argmax(pred[0])
+    # predSquareType = "NULL"
+    # if(pred[0][0] < 0.5) :
+    #     predSquareType = 0
+    # else:
+    #     predSquareType = 1         
 
 
-    if( imageFileNames[i].startswith(squareTypes[predSquareType]) ) :
+    if(   imageFileNames[i].startswith(classes[predSquareType]) ) :
         verdict = "correct" 
     else :
         verdict = "wrong"    
         allVerdictCorrect = False
+        wrongGuesses += 1
 
-    print(f"i = {i}, { squareTypes[predSquareType] },  verdict = {verdict}")    
+        # plt.imshow(transformedData[0])
+        # plt.show()
+
+        wrongGuessFiles.append(imageFileNames[i])
+
+    print(f"i = {i}, { classes[predSquareType] },  verdict = {verdict}")    
     
+
+
+
+
+
+
+
+print(f"\nWrongly guessed files : ")
+for fileName in wrongGuessFiles:
+    print(fileName)
+        
+print("----------------------------------")
+
+
+
 
 if(allVerdictCorrect) :
     print("\nAll guesses are correct\n")
 else :
     print("\nAll guesses are NOT correct!!!!!!!!!!!!!!!!!!!!!\n")
-        
-        
-print("----------------------------------")
+
+
+print(f"\nwrong guesses : {wrongGuesses}")
+print(f"Accuracy : {1 - (wrongGuesses / len(imageFileNames))}")
+

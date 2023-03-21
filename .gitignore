@@ -1,3 +1,4 @@
-data/rawData/
-data/trainingData/
+# data/rawData/
+# data/trainingData/
 data/
+models/emptyNonemptySquareClassifier/data/

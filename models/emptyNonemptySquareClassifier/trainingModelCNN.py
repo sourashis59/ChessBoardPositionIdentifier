@@ -12,7 +12,7 @@ from tensorflow.keras.metrics import Precision, Recall , BinaryAccuracy
 
 
 gpus = tf.config.experimental.list_physical_devices("GPU")
-print(f"gpus = {gpus}")
+print(f"gpus = {gpus}\n\n")
 
 
 
@@ -33,7 +33,6 @@ emptySquareSourcePath = 'data/trainingData/images/emptySquares'
 nonemptySquareSourcePath = 'data/trainingData/images/nonemptySquares'    
 
 
-squareTypes = ['empty', 'non-empty']
 # for squareTypeInd, squareType in enumerate(squareTypes) :
     
 #     filePath = ""
@@ -65,11 +64,22 @@ squareTypes = ['empty', 'non-empty']
 
 
 
+
+print("\n\nPreparing data...............\n")
 # *this also shuffles the data
 # * data contains batches of {image, label}
 # * image is resized to <resizedImageDimension> and converted to "RGB"
 data = tf.keras.utils.image_dataset_from_directory(dataPath, image_size=resizedImageDimension)
-  
+
+
+print("Data prepared...............\n")
+
+
+# print(f"\n\nclass names : {data.class_names}" )  
+classes = data.class_names
+
+
+
 
 ## batch contains array of data and labels. (data means rgb image)
 # batch = data.as_numpy_iterator().next()
@@ -116,7 +126,7 @@ data = data.map(lambda x,y : (x/255, y))
 # ================================================= TRAIN TEST SPLIT   =================================================
 # ======================================================================================================================
 
-print(len(data))
+# print(len(data))
 trainSize = int(len(data) * 0.7) #70%
 validationSize = int(len(data) * 0.2 ) 
 testSize = int(len(data) * 0.1) + 1
@@ -159,12 +169,14 @@ model.add(MaxPooling2D())
 
 model.add(Flatten())
 model.add(Dense(256, activation = 'relu'))
-model.add(Dense(1, activation='sigmoid'))
+model.add(Dense(len(classes), activation='sigmoid'))
 
 
-model.compile('adam', loss=tf.losses.BinaryCrossentropy(), metrics=['accuracy'])
+model.compile('adam', loss="sparse_categorical_crossentropy", metrics=['accuracy'])
 
+print("\n\nmodel  : \n" )
 print(model.summary())
+print("\n\n")
 
 
 # # log while training the model
@@ -172,13 +184,13 @@ print(model.summary())
 # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logDirectory)
 
 startTime = time.process_time()
-print("Starting training.............................")
+print("\n\nStarting training.............................")
 
 history = model.fit(trainData, epochs=20, validation_data = validationData )
 
 endTime = time.process_time()
 print("Elapsed time : ", (endTime - startTime) , " seconds.")
-print() # for new line
+print("\n\n") # for new line
 
 
 
@@ -208,14 +220,20 @@ plt.show()
 # ================================================= TEST PERFORMANCE   =================================================
 # ======================================================================================================================
 
-print("\n\ntesting Performance..................\n")
+print("\n\n\ntesting Performance..................\n")
 precision = Precision()
 recall = Recall()
 accuracy = BinaryAccuracy()
 
 for batch in testData.as_numpy_iterator() :
+    
+    # * y will be an array of labels (for example: y = [1,1,0,0,1,0,1,1,1,1,0,0])
+    # * model.predict(X) will return 32*2 array of {probability of class1, prob of class2} (batch size = 32)
+    # *     (for example : model.predict(x) = [ [0.2, 0.8], [0.5,0.5], [1, 0], [0.3, 0.7] ])
+    # * np.argmax(arr) returns the index of the max element
     X, y = batch
-    y_pred = model.predict(X)
+    y_pred = [ np.argmax(element) for element in model.predict(X)] #* for each probablity (size 2 array), find the index of max 
+
     precision.update_state(y, y_pred)
     recall.update_state(y, y_pred)
     accuracy.update_state(y, y_pred)
