@@ -141,7 +141,7 @@ model.add(Dense(256, activation = 'relu'))
 model.add(Dense(len(classes), activation='sigmoid'))
 
 
-model.compile('adam', loss="sparse_categorical_crossentropy", metrics=['accuracy'])
+model.compile('adam', loss="sparse_categorical_crossentropy", metrics=['sparse_categorical_accuracy'])
 
 print("\n\nmodel  : \n" )
 print(model.summary())
@@ -203,38 +203,38 @@ print("\n\n\ntesting Performance..................\n")
 
 
 
+
+
+
+precision = Precision()
+recall = Recall()
+accuracy = BinaryAccuracy()
+
+for batch in testData.as_numpy_iterator() :
+    
+    # * y will be an array of labels (for example: y = [1,4,0,0,2,0,1,3,3,1,0,5])
+    # * model.predict(X) will return 32*6 array of {probability of class1, prob of class2, ......} (batch size = 32)
+    # *     (for example : model.predict(x) = [ [0.2, 0.4,...], [0.5,0.1,.....], [1, 0,....], [0.3, 0.2,....] ])
+    # * np.argmax(arr) returns the index of the max element
+    X, y = batch
+    y_pred = [ np.argmax(element) for element in model.predict(X)] #* for each probablity (size 6 array), find the index of max 
+
+    precision.update_state(y, y_pred)
+    recall.update_state(y, y_pred)
+    accuracy.update_state(y, y_pred)
+
+
+print(f"\nUsing model.predict() : precision = {precision.result().numpy()}, Recall = {recall.result().numpy()}, Accuracy = {accuracy.result().numpy()}")
+
+
+
+
+
+
 testingResult = model.evaluate(testData)
-print("\n\nTesting result: ")
+print("\n\nTesting result(from model.evaluate()): ")
 print(testingResult)
 print("\n\n\n\n\n")
-
-
-
-
-
-
-# precision = Precision()
-# recall = Recall()
-# accuracy = BinaryAccuracy()
-
-# for batch in testData.as_numpy_iterator() :
-    
-#     # * y will be an array of labels (for example: y = [1,4,0,0,2,0,1,3,3,1,0,5])
-#     # * model.predict(X) will return 32*6 array of {probability of class1, prob of class2, ......} (batch size = 32)
-#     # *     (for example : model.predict(x) = [ [0.2, 0.4,...], [0.5,0.1,.....], [1, 0,....], [0.3, 0.2,....] ])
-#     # * np.argmax(arr) returns the index of the max element
-#     X, y = batch
-#     y_pred = [ np.argmax(element) for element in model.predict(X)] #* for each probablity (size 6 array), find the index of max 
-
-#     precision.update_state(y, y_pred)
-#     recall.update_state(y, y_pred)
-#     accuracy.update_state(y, y_pred)
-
-
-# print(f"\nprecision = {precision.result().numpy()}, Recall = {recall.result().numpy()}, Accuracy = {accuracy.result().numpy()}")
-
-
-
 
 
 

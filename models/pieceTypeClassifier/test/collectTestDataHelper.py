@@ -14,12 +14,20 @@ import random
 
 
 
-# if true, dump the files in destPathForEvaulate inside subdirectories (king, queen, rook, bishop, ..... ) [to be used by tf.keras.models.evaluate()]
-# else dump all the fiels in destPath 
-collectTestDataForEvaluate = False
 
 
-# collabSourcePath = "/content/drive/MyDrive/ChessBoardStateExtractor"
+
+#* if true, dump the files in destPathForEvaulate inside subdirectories (king, queen, rook, bishop, ..... ) [to be used by tf.keras.models.evaluate()]
+#* else dump all the fiels in destPath 
+collectTestDataForEvaluate = True
+
+
+
+
+
+
+
+
 
 destPath = "data/testData/pieceTypeClassifier"
 destPathForEvaluate = "data/testData/pieceTypeClassifierForEvaluate"
@@ -29,8 +37,21 @@ kaggleDataSourcePath = "data/rawData/kaggleData/test"
 
 
 
-maxLichessChessdotcomImageCount = 200
-maxKaggleDataCount = 1000
+maxLichessChessdotcomImageCount = 2000
+maxKaggleDataCount = 0
+
+
+
+classes = ['bishop', 'king', 'knight', 'pawn', 'queen', 'rook']
+
+
+# *create the subdirectories if not created earlier
+if(collectTestDataForEvaluate) :
+    for subdir in classes:
+        newPath = os.path.join(destPathForEvaluate, subdir)
+        if not os.path.exists(newPath):
+            os.makedirs(newPath)
+
 
 
 
