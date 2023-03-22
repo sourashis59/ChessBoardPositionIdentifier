@@ -15,7 +15,8 @@
 from PIL import Image
 from skimage.io import imread
 from skimage.transform import resize
-from skimage.color import rgb2gray
+from skimage.color import rgb2gray, rgba2rgb
+
 import os
 import numpy as np
 from sklearn.metrics import accuracy_score
@@ -61,6 +62,10 @@ for pieceColorInd, pieceColor in enumerate(pieceColors) :
         # data.append( list(image.getdata()) )
         
         image = imread(imagePath)
+
+        # if image is of type RGBA (contains an extra channel : alpha channel), remove the Alpha channel
+        if(len(image[0][0]) == 4):
+            image = rgba2rgb(image)
         
         # # make image black and white
         # # Only convert image to grayscale if it is RGB
