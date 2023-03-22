@@ -18,7 +18,7 @@
 
 
 
-from PIL import Image
+# from PIL import Image
 import tensorflow as tf
 import os 
 import cv2
@@ -47,15 +47,17 @@ classifier = load_model( os.path.join(collabSourcePath, "models/emptyNonemptySqu
 classes = ['emptySquare', 'nonemptySquare']
 
 data = []
-images = []
+# images = []
 imageFileNames = []
 
-filePath = 'models/emptyNonemptySquareClassifier/data/testData'
+filePath = 'data/testData/emptyNonemptySquareClassifier'
 
+
+print("\n\n\nCollecting data......................")
 for file in os.listdir(filePath):
     imagePath = os.path.join(filePath, file)
     imageFileNames.append(file)
-    images.append(Image.open(imagePath))
+    # images.append(Image.open(imagePath))
 
     # image = Image.open(imagePath)
     # images.append(image)
@@ -74,6 +76,7 @@ for file in os.listdir(filePath):
 
     data.append(image)
 
+print("Data Collected!\n")
 
 
 # data = np.asarray(data)
@@ -83,14 +86,21 @@ for file in os.listdir(filePath):
 
 
 
-print(f"images len = {len(images)}")
+print(f"images len = {len(data)}")
 # images[40].show()
 
 wrongGuesses = 0
 allVerdictCorrect = True
 wrongGuessFiles = []
 
+totalData = len(data)
+
+print("\n\ntesting data.......................................\n")
 for i in range(len(data)):
+
+    if(i % 500 == 0):
+        print(f"Tested data : {i}/{totalData},   wrong guess : {wrongGuesses}")
+
     # images[i].show()
     
     # for the CNN model, we need batch of images. 
@@ -104,7 +114,8 @@ for i in range(len(data)):
 
     #* it will return batch(of size 1) of predicted probabilities of classes(2 classes here)
     #* for example : pred = [[9.999664e-01 3.858412e-06]] 
-    pred = classifier.predict(transformedData) 
+    # *verbose = 0 ====> dont print anything while doing prediction
+    pred = classifier.predict(transformedData, verbose=0) 
     # print(pred)
 
     verdict = "NULL"
@@ -129,7 +140,7 @@ for i in range(len(data)):
 
         wrongGuessFiles.append(imageFileNames[i])
 
-    print(f"i = {i}, { classes[predSquareType] },  verdict = {verdict}")    
+    # print(f"i = {i}, { classes[predSquareType] },  verdict = {verdict}")    
     
 
 
@@ -154,5 +165,5 @@ else :
 
 
 print(f"\nwrong guesses : {wrongGuesses}")
-print(f"Accuracy : {1 - (wrongGuesses / len(imageFileNames))}")
+print(f"Accuracy : {1 - (wrongGuesses / totalData)}")
 

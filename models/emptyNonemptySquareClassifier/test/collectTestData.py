@@ -10,7 +10,7 @@ sys.path.append("./scripts/modules")
 from PIL import Image
 import os
 from util import getSquaresFromChessBoardImage, getSquaresFromFenString
-
+import random
 
 
 
@@ -19,9 +19,14 @@ from util import getSquaresFromChessBoardImage, getSquaresFromFenString
 
 # collabSourcePath = "/content/drive/MyDrive/ChessBoardStateExtractor"
 
-destPath = "models/emptyNonemptySquareClassifier/data/testData"
+destPath = "data/testData/emptyNonemptySquareClassifier"
 lichessChessdotcomSourcePath = "data/rawData/lichess_chess.com_images"
-kaggleDataSourcePath = "data/rawData/kaggleData/train"
+kaggleDataSourcePath = "data/rawData/kaggleData/test"
+
+
+
+maxLichessChessdotcomImageCount = 0
+maxKaggleDataCount = 1000
 
 
 
@@ -34,9 +39,22 @@ print("Copying images from \'" + lichessChessdotcomSourcePath + "\' ........")
 sourceDirectory = os.fsencode(lichessChessdotcomSourcePath)
 imageCount = 0
 lichessChessdotcomImageCount = 0
-maxLichessChessdotcomImageCount = 10
+
 
 for file in os.listdir(sourceDirectory):
+
+    # we will use maxlichessChessdotcomImageCount kaggle data
+    if(lichessChessdotcomImageCount > maxLichessChessdotcomImageCount) :
+        break
+
+
+    # print("fen = "+ fenString)
+    if(lichessChessdotcomImageCount % 100 == 0) :
+        print(f"processed images = {lichessChessdotcomImageCount}/{maxLichessChessdotcomImageCount}")
+
+    lichessChessdotcomImageCount += 1
+
+
     fileName = os.fsdecode(file)
     if ( fileName.endswith(".jpg") or fileName.endswith(".png") ) :                 
         # print(os.path.join(fileName))
@@ -68,16 +86,7 @@ for file in os.listdir(sourceDirectory):
                     imageCount = imageCount + 1
 
 
-    lichessChessdotcomImageCount += 1
 
-    # we will use maxlichessChessdotcomImageCount kaggle data
-    if(lichessChessdotcomImageCount > maxLichessChessdotcomImageCount) :
-        break
-
-
-    # print("fen = "+ fenString)
-    if(lichessChessdotcomImageCount % 100 == 0) :
-        print(f"processed images = {lichessChessdotcomImageCount}/{maxLichessChessdotcomImageCount}")
 
 
 
@@ -110,7 +119,6 @@ print(f"saved imageCount = {imageCount}\n\n\n\n")
 
 # we will get maxKaggleDataCount data from kaggle data 
 kaggleDataCount = 0
-maxKaggleDataCount = 10
 
 sourceDirectory = os.fsencode(kaggleDataSourcePath)
 for file in os.listdir(sourceDirectory):
@@ -195,6 +203,8 @@ for file in os.listdir(sourceDirectory):
             
 
         emptySquareImages = emptySquareImages[:min(len(nonemptySquareImages), len(emptySquareImages))]
+        random.shuffle(emptySquareImages)
+
         for image in emptySquareImages:
             image.save(f"{destPath}/emptySquare_kaggleData_{imageCount}.png")
             imageCount = imageCount + 1
