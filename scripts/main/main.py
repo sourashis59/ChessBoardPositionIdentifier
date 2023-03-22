@@ -116,13 +116,11 @@ for i in range(len(squares)) :
         transformedDataOpenCV = np.expand_dims(squareImageOpenCV/255, 0)
 
         squareImage = resize(squareImage, (20, 20))
+        if(len(squareImage[0][0]) == 4):
+            squareImage = rgba2rgb(squareImage)
+
         data.append(squareImage.flatten())
         data = np.asarray(data)
-
-        # if image is of type RGBA (contains an extra channel : alpha channel), remove the Alpha channel
-        squareImageForPieceTypeClassifier = None
-        if(len(squareImage[0][0]) == 4):
-            squareImageForPieceTypeClassifier = rgba2rgb(squareImage)
 
 
         # check if square contains any piece
