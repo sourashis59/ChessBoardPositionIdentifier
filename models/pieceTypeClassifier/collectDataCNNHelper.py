@@ -10,29 +10,23 @@ sys.path.append("./scripts/modules")
 from PIL import Image
 import os
 from util import getSquaresFromChessBoardImage, getSquaresFromFenString
-import random
 
 
 
-# if true, dump the files in destPathForEvaulate inside subdirectories (king, queen, rook, bishop, ..... ) [to be used by tf.keras.models.evaluate()]
-# else dump all the fiels in destPath 
-collectTestDataForEvaluate = False
 
 
-# collabSourcePath = "/content/drive/MyDrive/ChessBoardStateExtractor"
+pieceTypes = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn']
 
-destPath = "data/testData/pieceTypeClassifier"
-destPathForEvaluate = "data/testData/pieceTypeClassifierForEvaluate"
+destPath = "data/trainingData/pieceTypes"
 
 lichessChessdotcomSourcePath = "data/rawData/lichess_chess.com_images"
-kaggleDataSourcePath = "data/rawData/kaggleData/test"
+kaggleDataSourcePath = "data/rawData/kaggleData/train"
 
 
 
-maxLichessChessdotcomImageCount = 200
-maxKaggleDataCount = 1000
 
-
+maxKaggleDataCount = 25000
+maxLichessChessdotcomImageCount = 2000
 
 
 # =========================================================lichessChessdotcom data=========================================================
@@ -42,8 +36,7 @@ print("Copying images from \'" + lichessChessdotcomSourcePath + "\' ........")
 
 sourceDirectory = os.fsencode(lichessChessdotcomSourcePath)
 imageCount = 0
-lichessChessdotcomImageCount = 0
-
+lichessChessdotcomImageCount = 1
 
 for file in os.listdir(sourceDirectory):
     fileName = os.fsdecode(file)
@@ -53,6 +46,7 @@ for file in os.listdir(sourceDirectory):
         # we will use maxlichessChessdotcomImageCount kaggle data
         if(lichessChessdotcomImageCount > maxLichessChessdotcomImageCount) :
             break
+
         # print("fen = "+ fenString)
         if(lichessChessdotcomImageCount % 100 == 0) :
             print(f"processed images = {lichessChessdotcomImageCount}/{maxLichessChessdotcomImageCount}")
@@ -61,6 +55,9 @@ for file in os.listdir(sourceDirectory):
 
 
 
+
+        # print(f"fileName : {fileName}")
+        
         currImage = Image.open( os.path.join(sourceDirectory.decode(), fileName ) )
         squares = getSquaresFromChessBoardImage(currImage)
         for i in range(0, len(squares)):
@@ -126,24 +123,16 @@ for file in os.listdir(sourceDirectory):
                     pieceColor = 'white'
 
                 if(pieceType != 'NULL') :
-                    if(collectTestDataForEvaluate) :
-                        resizedImage.save(f"{destPathForEvaluate}/{pieceType}/{pieceType}_{pieceColor}_{imageCount}.png")
-                    else:                        
-                        resizedImage.save(f"{destPath}/{pieceType}_{pieceColor}_{imageCount}.png")
-
+                    resizedImage.save(f"{destPath}/{pieceType}/{pieceType}_{pieceColor}_{imageCount}.png")
                     imageCount += 1
-
-
-
-
-
+                    
 
 
 
 print("\nCopying Completed !\n")
 
 print(f"lichessChessdotcomImageCount = {lichessChessdotcomImageCount}")
-print(f"saved imageCount = {imageCount}\n\n\n\n")
+print(f"saved imageCount = {imageCount}\n\n\n\n\n\n")
 
 
 
@@ -168,7 +157,7 @@ print(f"saved imageCount = {imageCount}\n\n\n\n")
 
 
 # we will get maxKaggleDataCount data from kaggle data 
-kaggleDataCount = 0
+kaggleDataCount = 1
 
 sourceDirectory = os.fsencode(kaggleDataSourcePath)
 for file in os.listdir(sourceDirectory):
@@ -192,13 +181,8 @@ for file in os.listdir(sourceDirectory):
 
 
 
-        
         fenString = fileName[0: (fileName.index('.') ) ].replace('-', '/') 
-        
-        
-
         squares = getSquaresFromFenString(fenString)
-
         squareImages = getSquaresFromChessBoardImage(Image.open(os.path.join(kaggleDataSourcePath, fileName)))    
 
         emptySquareImages = []
@@ -251,20 +235,21 @@ for file in os.listdir(sourceDirectory):
                     pieceColor = 'white'    
 
 
-                if(pieceType != 'NULL') :
-                    if(collectTestDataForEvaluate) :
-                        squareImages[i][j].save(f"{destPathForEvaluate}/{pieceType}/{pieceType}_{pieceColor}_kaggleData_{imageCount}.png")
-                    else:                        
-                        squareImages[i][j].save(f"{destPath}/{pieceType}_{pieceColor}_kaggleData_{imageCount}.png")
 
+                if(pieceType != 'NULL') :
+                    squareImages[i][j].save(f"{destPath}/{pieceType}/{pieceType}_{pieceColor}_kaggleData_{imageCount}.png")
                     imageCount += 1
 
+                # # save the image
+                # if(pieceType != "NULL") :
+                #     squareImages[i][j].save(os.path.join(destPath, f"{pieceType}/{color}/{imageCount}_{color}_{pieceType}.png"))
+                #     imageCount += 1
+        
 
 
 
         
-
-                                    
+                            
 
 print("\nCopying Completed !\n")
 
