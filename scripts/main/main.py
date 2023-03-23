@@ -26,10 +26,23 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
 from tensorflow.keras.metrics import Precision, Recall , BinaryAccuracy
 
+from chessEngineWrapper import ChessEngineWrapper
 
 
 
-sourceImagePath = "scripts/main/test/image4.png"
+sourceImagePath = "scripts/main/test/image8.png"
+
+CHESS_ENGINE_PATH = "scripts/main/chessEngineBin/stockfish_15_x64_avx2.exe"
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -78,7 +91,7 @@ def boardToFENPieces(pieces) :
                     return "NULL"
                 result[len(result) - 1] = str( int(result[len(result) - 1]) + 1 )
             
-        if (i < 8):
+        if (i < 7):
             result.append("/")
 
     
@@ -92,101 +105,121 @@ def boardToFENPieces(pieces) :
 
 
 
+def getFenFromImagePath(imagePath):
+    boardImage = Image.open(os.path.join(imagePath) )
+
+    pieces = []
+    board = []
+    squares = getSquaresFromChessBoardImage(boardImage)
+
+    for i in range(len(squares)) :
+        currRow = ""
+        currRowBoard = []
+
+        for j in range(len(squares[i])):
+            data = []
+
+            # convert from PIL.Image to skimage
+            squares[i][j].save("scripts/main/temp/tempSquareImage.png")
+            squareImage = imread("scripts/main/temp/tempSquareImage.png")
+
+            squareImageOpenCV = cv2.imread("scripts/main/temp/tempSquareImage.png")
+            squareImageOpenCV = cv2.cvtColor(squareImageOpenCV, cv2.COLOR_BGR2RGB)
+            squareImageOpenCV = tf.image.resize(squareImageOpenCV, (64, 64)).numpy().astype(int)
+            transformedDataOpenCV = np.expand_dims(squareImageOpenCV/255, 0)
+
+            squareImage = resize(squareImage, (20, 20))
+            if(len(squareImage[0][0]) == 4):
+                squareImage = rgba2rgb(squareImage)
+
+            data.append(squareImage.flatten())
+            data = np.asarray(data)
 
 
-
-pieces = []
-board = []
-squares = getSquaresFromChessBoardImage(Image.open(os.path.join(sourceImagePath) ))
-
-for i in range(len(squares)) :
-    currRow = ""
-    currRowBoard = []
-
-    for j in range(len(squares[i])):
-        data = []
-
-        # convert from PIL.Image to skimage
-        squares[i][j].save("scripts/main/temp/tempSquareImage.png")
-        squareImage = imread("scripts/main/temp/tempSquareImage.png")
-
-        squareImageOpenCV = cv2.imread("scripts/main/temp/tempSquareImage.png")
-        squareImageOpenCV = cv2.cvtColor(squareImageOpenCV, cv2.COLOR_BGR2RGB)
-        squareImageOpenCV = tf.image.resize(squareImageOpenCV, (64, 64)).numpy().astype(int)
-        transformedDataOpenCV = np.expand_dims(squareImageOpenCV/255, 0)
-
-        squareImage = resize(squareImage, (20, 20))
-        if(len(squareImage[0][0]) == 4):
-            squareImage = rgba2rgb(squareImage)
-
-        data.append(squareImage.flatten())
-        data = np.asarray(data)
-
-
-        # check if square contains any piece
-            # check the color and type of the piece
-        if( squareTypes[ np.argmax( emptyNonemptySquareClassifier.predict(transformedDataOpenCV, verbose=0)[0] ) ] == 'emptySquare') :
-            currRow += ( "|    " )
-            currRowBoard.append("NULL")
-            # print("empty")
-        else :
-            currPieceColor = pieceColors[ (blackOrWhitePieceClassifier.predict([data[0]]))[0] ]
-            currPieceType = pieceTypes[ np.argmax( pieceTypeClassifier.predict(transformedDataOpenCV, verbose=0)[0] )  ]
-
-            
-            currPieceString = f"{currPieceColor[0]}"
-            if(currPieceType == 'knight') :
-                currPieceString += ('n')     
-                currRowBoard.append('n')
+            # check if square contains any piece
+                # check the color and type of the piece
+            if( squareTypes[ np.argmax( emptyNonemptySquareClassifier.predict(transformedDataOpenCV, verbose=0)[0] ) ] == 'emptySquare') :
+                currRow += ( "|    " )
+                currRowBoard.append("NULL")
+                # print("empty")
             else :
-                currPieceString += (currPieceType[0])
-                currRowBoard.append(currPieceType[0])
+                currPieceColor = pieceColors[ (blackOrWhitePieceClassifier.predict([data[0]]))[0] ]
+                currPieceType = pieceTypes[ np.argmax( pieceTypeClassifier.predict(transformedDataOpenCV, verbose=0)[0] )  ]
 
-            if(currPieceColor == "white"):
-                currRowBoard[len(currRowBoard) - 1] = currRowBoard[len(currRowBoard) - 1].upper() 
+                
+                currPieceString = f"{currPieceColor[0]}"
+                if(currPieceType == 'knight') :
+                    currPieceString += ('n')     
+                    currRowBoard.append('n')
+                else :
+                    currPieceString += (currPieceType[0])
+                    currRowBoard.append(currPieceType[0])
 
-            currRow += ( "| " + currPieceString + " ")        
+                if(currPieceColor == "white"):
+                    currRowBoard[len(currRowBoard) - 1] = currRowBoard[len(currRowBoard) - 1].upper() 
 
-            # print(currPieceColor + " " + currPieceType)
+                currRow += ( "| " + currPieceString + " ")        
+
+                # print(currPieceColor + " " + currPieceType)
+        
+        currRow += '|'
+        pieces.append(currRow  )
+        board.append(currRowBoard)
+
+
+
+    # print("\nPieces : \n")
+    # # print the board
+    # print("-----------------------------------------")
+    # for i in range(len(pieces)) :
+    #     print(pieces[i])
+    #     print("-----------------------------------------")
+
+    # print("\n\n--------------------------------------------------\n")
+
+
+
+
+
+    fenString = boardToFENPieces(board)
+    # print(f"\nfen = {fenString}" )
+    # print(pieces)
+
+    return fenString
+
+
+
+
+
+
+
+
+
+
+
+# fenString = getFenFromImagePath(sourceImagePath)
+# print("\n\n\nImage path : "  + sourceImagePath)
+# print("Fen : " + fenString)
+
+
+
+
+chessEngine = ChessEngineWrapper(CHESS_ENGINE_PATH)
+print("\n\nPress \"ctrl + c\" to terminate!!!!!!!\n\n\n")
+while(True):
+    sys.stdin.flush()
+    sys.stdout.flush()
     
-    currRow += '|'
-    pieces.append(currRow  )
-    board.append(currRowBoard)
+    imagePath = input("\n\n\n\nEnter image path : ")
+    currentPlayer = input("Enter current player (white/black) : ")
+    moveTime = input("Enter movetime(in ms) : ")
 
+    fenString = getFenFromImagePath(imagePath)
+    print("\nFEN : " + fenString)
+    chessEngine.printPosition()
 
+    print("\n\nPrinting analysis: ")
+    print("-----------------------------------------------------------------------\n")
 
-
-print("\nPieces : \n")
-
-# print the board
-print("-----------------------------------------")
-for i in range(len(pieces)) :
-    print(pieces[i])
-    print("-----------------------------------------")
-
-print("\n\n--------------------------------------------------\n")
-
-
-
-
-
-
-
-
-
-fenString = boardToFENPieces(board)
-print(f"\nfen = {fenString}" )
-
-# print(pieces)
-
-
-
-
-
-
-
-
-
-
-
+    chessEngine.go(moveTime)
 
