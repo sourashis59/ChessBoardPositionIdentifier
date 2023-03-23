@@ -32,7 +32,8 @@ from chessEngineWrapper import ChessEngineWrapper
 
 sourceImagePath = "scripts/main/test/image8.png"
 
-CHESS_ENGINE_PATH = "scripts/main/chessEngineBin/stockfish_15_x64_avx2.exe"
+# CHESS_ENGINE_PATH = "scripts/main/chessEngineBin/stockfish_15_x64_avx2.exe"
+CHESS_ENGINE_PATH = "scripts/main/chessEngineBin/bluebetafish_64bit_windows.exe"
 
 
 
@@ -210,16 +211,21 @@ while(True):
     sys.stdin.flush()
     sys.stdout.flush()
     
+    # example path : "scripts/main/test/image8.png"
     imagePath = input("\n\n\n\nEnter image path : ")
-    currentPlayer = input("Enter current player (white/black) : ")
+    currentPlayer = input("Enter current player (w/b) : ")
     moveTime = input("Enter movetime(in ms) : ")
 
-    fenString = getFenFromImagePath(imagePath)
+    fenString = getFenFromImagePath(imagePath)  + " " + currentPlayer + " - - "
     print("\nFEN : " + fenString)
-    chessEngine.printPosition()
+
+    chessEngine.setposition(fenString)
+    # chessEngine.printPosition()
 
     print("\n\nPrinting analysis: ")
     print("-----------------------------------------------------------------------\n")
 
     chessEngine.go(moveTime)
 
+# r1b2bkr/ppp3pp/2n5/3qp3/2B5/8/PPPP1PPP/RNB1K2R w KQkq - 0 1
+# rnbq1bnr/pppkpppp/8/3p4/3P4/8/PPPKPPPP/RNBQ1BNR w - - 2 3

@@ -32,7 +32,12 @@ class ChessEngineWrapper(subprocess.Popen):
     def setposition(self, fenString):
         try:
             self.sendCommand(f"position fen {fenString}")
-            self.isready()
+            # self.isready()
+            while True:
+                line = self.stdout.readline().strip()
+                print(line)
+                if 'Fen' in line or "CurrentPlayer" in line:
+                    return 
 
         except ValueError as e:
             print('\nCheck position correctness\n')
@@ -59,10 +64,10 @@ class ChessEngineWrapper(subprocess.Popen):
         self.sendCommand('ucinewgame')
         self.isready()
 
-    def printPosition(self):
-        self.sendCommand("d")
-        while True:
-            line = self.stdout.readline().strip()
-            print(line)
-            if 'Fen' in line or "CurrentPlayer" in line:
-                return 
+    # def printPosition(self):
+    #     self.sendCommand("d")
+    #     while True:
+    #         line = self.stdout.readline().strip()
+    #         print(line)
+    #         if 'Fen' in line or "CurrentPlayer" in line:
+    #             return 
