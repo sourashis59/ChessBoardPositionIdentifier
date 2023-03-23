@@ -1,0 +1,6 @@
+PILLOW
+scikit-image
+tensorflow==2.10.0
+opencv-python
+matplotlib
+scikit-learn
