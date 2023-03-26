@@ -198,6 +198,120 @@ def getFenFromImagePath(imagePath):
 
 
 
+   
+
+
+
+
+
+#*      0   1   2   3   4   5   6   7
+#*    -----------------------------------
+#*   0|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   1|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   2|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   3|   | S | D |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   4|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   5|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   6|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   7|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*
+#*   
+#*    S ==> SOURCE CELL (3,1)
+#*    D ==> DEST CELL (3,2)
+#*
+#*
+#*               ||||
+#*               ||||
+#*               ||||        
+#*               ||||    
+#*               ||||        DRAW ARROW FROM SOURCE TO DEST
+#*               ||||
+#*               ||||
+#*               ||||
+#*             --------
+#*             \      /
+#*              \    /
+#*               \  /
+#*                \/
+#*
+#*      0   1   2   3   4   5   6   7
+#*    -----------------------------------
+#*   0|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   1|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   2|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   3|   | ==|=> |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   4|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   5|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   6|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+#*   7|   |   |   |   |   |   |   |   |
+#*    |---|---|---|---|---|---|---|---|
+
+#* SOURCE CELL / DEST CELL = (index of row, index of col)
+#* IMAGE SHOULD BE OPEN CV 
+def drawArrowFromSourceToDestCell(sourceCell, destCell, image):
+    
+    imageHeight, imageWidth, channels = image.shape
+
+    def getCoordinateOfCenterOfCell(cell):
+        i, j = cell
+        left = j * imageWidth / 8
+        right = (j + 1) * imageWidth / 8
+        upper = i * imageHeight / 8
+        lower = (i + 1) * imageHeight / 8
+
+        center = (left + (right-left)/2, upper + (lower-upper)/2)
+        return ( (int)(center[0]), (int)(center[1]) )
+
+    sourceCenterCoordinate = getCoordinateOfCenterOfCell(sourceCell)
+    destCenterCoordinate = getCoordinateOfCenterOfCell(destCell)
+
+    # Draw arrowed line from <sourceCenterCoordinate> to <destCenterCoordinate> in color(rgb(0,0,0)) with thickness <arrowWidthPixels> pixels
+    arrowWidthPixels = 7
+    image = cv2.arrowedLine(image, sourceCenterCoordinate , destCenterCoordinate, (160,32,240), arrowWidthPixels)
+
+    
+    return image
+
+
+
+
+
+
+
+
+
+
+
+#* returns (cell row, cell col) from moveString(algebric notation) (e.g. "e7e8q")
+def getCellFromAlgebricMove(moveString) :
+    fromSquare =  ( (8 - (ord(moveString[1]) - ord('0'))), (ord(moveString[0]) - ord('a')) ) 
+    toSquare = ( (8 - (ord(moveString[3]) - ord('0'))), (ord(moveString[2]) - ord('a')) )
+
+    return (fromSquare, toSquare)
+
+
+
+
+
+
+
+
+
 # fenString = getFenFromImagePath(sourceImagePath)
 # print("\n\n\nImage path : "  + sourceImagePath)
 # print("Fen : " + fenString)
@@ -224,8 +338,28 @@ while(True):
 
     print("\n\nPrinting analysis: ")
     print("-----------------------------------------------------------------------\n")
+    bestMoveString = chessEngine.go(moveTime)
 
-    chessEngine.go(moveTime)
+
+    #*draw arrow on the given image
+    boardImage = cv2.imread(imagePath)
+    move = getCellFromAlgebricMove(bestMoveString)
+    drawArrowFromSourceToDestCell(sourceCell=move[0], destCell=move[1], image=boardImage)
+
+    # display the image with arrow
+    cv2.imshow(imagePath, boardImage)
+    
+    # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+    cv2.waitKey(0)
+    
+    # cv2.destroyAllWindows() simply destroys all the windows we created.
+    cv2.destroyAllWindows()
 
 # r1b2bkr/ppp3pp/2n5/3qp3/2B5/8/PPPP1PPP/RNB1K2R w KQkq - 0 1
 # rnbq1bnr/pppkpppp/8/3p4/3P4/8/PPPKPPPP/RNBQ1BNR w - - 2 3
+
+
+
+
+
+

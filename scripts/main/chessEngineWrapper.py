@@ -44,13 +44,14 @@ class ChessEngineWrapper(subprocess.Popen):
             sys.exit(e.message)
 
 
+    #* prints analysis and returns the best move string (for example : e3d4)
     def go(self, moveTime):
         self.sendCommand(f'go movetime {moveTime}')
         while True:
             line = self.stdout.readline().strip()
             print(line)
             if 'bestmove' in line:
-                return 
+                return line.split(' ')[1]
                 
 
     def isready(self):
