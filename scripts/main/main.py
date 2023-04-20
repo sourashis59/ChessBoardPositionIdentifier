@@ -4,7 +4,6 @@ import sys
 sys.path.append("./scripts/modules")
 
 
-from util import getSquaresFromChessBoardImage
 
 import os
 from PIL import Image
@@ -19,14 +18,12 @@ import tensorflow as tf
 import os 
 import cv2
 # import imghdr
-import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
-from tensorflow.keras.metrics import Precision, Recall , BinaryAccuracy
 
-from chessEngineWrapper import ChessEngineWrapper
+from modules.util import *
+from modules.chessEngineWrapper import ChessEngineWrapper
 
 
 
@@ -59,44 +56,6 @@ pieceColors = ['white', 'black']
 pieceTypeClassifier = load_model("scripts/main/trainedModels/pieceTypeClassifier/22-03-2023-sparse_categorical_accuracy/trainedModelCNN.h5" )
 pieceTypes = ['bishop', 'king', 'knight', 'pawn', 'queen', 'rook']
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
-# * @param pieces squares array from Board object (8*8 matrix)
-# * @returns string representing FEN field for piece position or null
-#
-def boardToFENPieces(pieces) :
-    result = []
-    
-    for i in range(8):
-        for  j in range(8):
-            if (pieces[i][j] != "NULL" ) :
-                result.append(pieces[i][j])
-            elif (len(result) == 0 or not result[len(result) - 1].isdigit()) :
-                result.append("1")
-            else :
-                if (int(result[len(result) - 1]) > 8):
-                    return "NULL"
-                result[len(result) - 1] = str( int(result[len(result) - 1]) + 1 )
-            
-        if (i < 7):
-            result.append("/")
-
-    
-    return ("").join(result)
 
 
 
@@ -198,119 +157,6 @@ def getFenFromImagePath(imagePath):
 
 
 
-   
-
-
-
-
-
-#*      0   1   2   3   4   5   6   7
-#*    -----------------------------------
-#*   0|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   1|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   2|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   3|   | S | D |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   4|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   5|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   6|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   7|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*
-#*   
-#*    S ==> SOURCE CELL (3,1)
-#*    D ==> DEST CELL (3,2)
-#*
-#*
-#*               ||||
-#*               ||||
-#*               ||||        
-#*               ||||    
-#*               ||||        DRAW ARROW FROM SOURCE TO DEST
-#*               ||||
-#*               ||||
-#*               ||||
-#*             --------
-#*             \      /
-#*              \    /
-#*               \  /
-#*                \/
-#*
-#*      0   1   2   3   4   5   6   7
-#*    -----------------------------------
-#*   0|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   1|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   2|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   3|   | ==|=> |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   4|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   5|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   6|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-#*   7|   |   |   |   |   |   |   |   |
-#*    |---|---|---|---|---|---|---|---|
-
-#* SOURCE CELL / DEST CELL = (index of row, index of col)
-#* IMAGE SHOULD BE OPEN CV 
-def drawArrowFromSourceToDestCell(sourceCell, destCell, image):
-    
-    imageHeight, imageWidth, channels = image.shape
-
-    def getCoordinateOfCenterOfCell(cell):
-        i, j = cell
-        left = j * imageWidth / 8
-        right = (j + 1) * imageWidth / 8
-        upper = i * imageHeight / 8
-        lower = (i + 1) * imageHeight / 8
-
-        center = (left + (right-left)/2, upper + (lower-upper)/2)
-        return ( (int)(center[0]), (int)(center[1]) )
-
-    sourceCenterCoordinate = getCoordinateOfCenterOfCell(sourceCell)
-    destCenterCoordinate = getCoordinateOfCenterOfCell(destCell)
-
-    # Draw arrowed line from <sourceCenterCoordinate> to <destCenterCoordinate> in color(rgb(0,0,0)) with thickness <arrowWidthPixels> pixels
-    arrowWidthPixels = 5
-    image = cv2.arrowedLine(image, sourceCenterCoordinate , destCenterCoordinate, (160,32,240), arrowWidthPixels)
-
-    
-    return image
-
-
-
-
-
-
-
-
-
-
-
-#* returns (cell row, cell col) from moveString(algebric notation) (e.g. "e7e8q")
-def getCellFromAlgebricMove(moveString) :
-    fromSquare =  ( (8 - (ord(moveString[1]) - ord('0'))), (ord(moveString[0]) - ord('a')) ) 
-    toSquare = ( (8 - (ord(moveString[3]) - ord('0'))), (ord(moveString[2]) - ord('a')) )
-
-    return (fromSquare, toSquare)
-
-
-
-
-
-
-
-
 
 # fenString = getFenFromImagePath(sourceImagePath)
 # print("\n\n\nImage path : "  + sourceImagePath)
@@ -341,23 +187,22 @@ while(True):
     bestMoveString = chessEngine.go(moveTime)
 
 
+
+
+
     #*draw arrow on the given image
     boardImage = cv2.imread(imagePath)
     move = getCellFromAlgebricMove(bestMoveString)
     drawArrowFromSourceToDestCell(sourceCell=move[0], destCell=move[1], image=boardImage)
 
-    
     # resize the image (faced some problem while showing the image in my laptop's display--> problem with display. so resizing the image)
     boardImage = cv2.resize(boardImage, (500, 500)) 
 
-    # display the image with arrow
+    #* display the image with arrow
     cv2.imshow(imagePath, boardImage)
-
-
-    # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+    #* waitKey() waits for a key press to close the window and 0 specifies indefinite loop
     cv2.waitKey(0)
-    
-    # cv2.destroyAllWindows() simply destroys all the windows we created.
+    #* cv2.destroyAllWindows() simply destroys all the windows we created.
     cv2.destroyAllWindows()
 
 # r1b2bkr/ppp3pp/2n5/3qp3/2B5/8/PPPP1PPP/RNB1K2R w KQkq - 0 1

@@ -36,10 +36,6 @@ from tensorflow.keras.metrics import Precision, Recall , BinaryAccuracy
 
 use_tf_keras_models_evaluate = False
 
-
-
-
-
 resizedImageDimension = (64, 64)
 
 
@@ -66,6 +62,20 @@ print("\n\n\nCollecting data......................")
 
 
 
+#* given a batch of input and model, returns the batch of predictions 
+#* For example: given [image1, image2, ...., imageN]
+#* Output : [predClass1, predClass2, ...., predClassN]
+def getPredictions(batchX, model):
+
+    #* it will return batch of predicted probabilities of classes 
+    # *verbose = 0 ====> dont print anything while doing prediction
+    pred = classifier.predict(transformedData, verbose=0) 
+
+    predClassIndices = []
+    for i in range(len(pred)):
+        predClassIndices.append(np.argmax(pred[i]))
+
+    return predClassIndices        
 
 
 
@@ -81,23 +91,21 @@ if(not use_tf_keras_models_evaluate):
         imagePath = os.path.join(filePath, file)
         imageFileNames.append(file)
         # images.append(Image.open(imagePath))
-
         # image = Image.open(imagePath)
         # images.append(image)
         # image = image.resize((20,20))
         # data.append( list(image.getdata()) )
-
-
         # image = imread(imagePath)
-        
         image = cv2.imread(imagePath)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = tf.image.resize(image, resizedImageDimension).numpy().astype(int)
-        
         # plt.imshow(image)    
         # plt.show()
-
         data.append(image)
+
+    data = np.array(data)
+    #* IMPORTANT: we need to scale the pixel values from [0,255] to [0,1]
+    data = data / 255
 
     print("Data Collected!\n")
 
@@ -122,8 +130,9 @@ if(not use_tf_keras_models_evaluate):
 
         # images[i].show()
         
-        # for the CNN model, we need batch of images. 
-        transformedData = np.expand_dims(data[i]/255, 0)
+        #* for the CNN model, we need batch of images. 
+        # transformedData = np.expand_dims(data[i], 0)
+        transformedData = np.array([ data[i] ])
         # print(transformedData)
         
         # plt.imshow(transformedData[0])
@@ -131,15 +140,17 @@ if(not use_tf_keras_models_evaluate):
 
         # # pred = classifier.predict([data[i]])
 
-        #* it will return batch(of size 1) of predicted probabilities of classes(2 classes here)
-        #* for example : pred = [[9.999664e-01 3.858412e-06]] 
-        # *verbose = 0 ====> dont print anything while doing prediction
-        pred = classifier.predict(transformedData, verbose=0) 
-        # print(pred)
+        # #* it will return batch(of size 1) of predicted probabilities of classes(2 classes here)
+        # #* for example : pred = [[9.999664e-01 3.858412e-06]] 
+        # # *verbose = 0 ====> dont print anything while doing prediction
+        # pred = classifier.predict(transformedData, verbose=0) 
+        # # print(pred)
+        # predClassInd = np.argmax(pred[0])    
+        predClassIndices = getPredictions(transformedData, classifier)
+        predClassInd = predClassIndices[0]
 
         verdict = "NULL"
 
-        predClassInd = np.argmax(pred[0])    
 
 
         if( imageFileNames[i].startswith(classes[predClassInd]) ) :
@@ -188,12 +199,12 @@ if(not use_tf_keras_models_evaluate):
 
 
 
-# else :
-    testData = tf.keras.utils.image_dataset_from_directory(filePathForEvaluate, image_size=resizedImageDimension)
-    testData = testData.map(lambda x,y : (x/255, y)) 
+# # else :
+#     testData = tf.keras.utils.image_dataset_from_directory(filePathForEvaluate, image_size=resizedImageDimension)
+#     testData = testData.map(lambda x,y : (x/255, y)) 
 
     
-    testingResult = classifier.evaluate(testData)
-    print("\n\nTesting result (using evaluate() ): ")
-    print(testingResult)
-    print("\n\n\n\n\n")
+#     testingResult = classifier.evaluate(testData)
+#     print("\n\nTesting result (using evaluate() ): ")
+#     print(testingResult)
+#     print("\n\n\n\n\n")

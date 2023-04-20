@@ -9,7 +9,7 @@ sys.path.append("./scripts/modules")
 
 from PIL import Image
 import os
-from util import getSquaresFromChessBoardImage, getSquaresFromFenString
+from scripts.main.modules.util import getSquaresFromChessBoardImage, getSquaresFromFenString
 import random
 
 

@@ -4,7 +4,7 @@ import sys
 sys.path.append("./scripts/modules")
 
 
-from util import getSquaresFromChessBoardImage
+from scripts.main.modules.util import getSquaresFromChessBoardImage
 
 import os
 from PIL import Image
