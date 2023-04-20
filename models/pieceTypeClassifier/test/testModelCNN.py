@@ -142,7 +142,7 @@ if(not use_tf_keras_models_evaluate):
         predClassInd = np.argmax(pred[0])    
 
 
-        if(   imageFileNames[i].startswith(classes[predClassInd]) ) :
+        if( imageFileNames[i].startswith(classes[predClassInd]) ) :
             verdict = "correct" 
         else :
             verdict = "wrong"    
