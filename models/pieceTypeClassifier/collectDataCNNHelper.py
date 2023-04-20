@@ -4,9 +4,6 @@
 import sys
 sys.path.append("./scripts/modules")
 
-
-
-
 from PIL import Image
 import os
 from util import getSquaresFromChessBoardImage, getSquaresFromFenString
@@ -25,8 +22,10 @@ kaggleDataSourcePath = "data/rawData/kaggleData/train"
 
 
 
-maxKaggleDataCount = 25000
-maxLichessChessdotcomImageCount = 2000
+# maxKaggleDataCount = 8000
+# maxLichessChessdotcomImageCount = 2000
+maxKaggleDataCount = 12000
+maxLichessChessdotcomImageCount = 0
 
 
 # =========================================================lichessChessdotcom data=========================================================

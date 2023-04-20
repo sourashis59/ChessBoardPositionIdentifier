@@ -281,7 +281,7 @@ def drawArrowFromSourceToDestCell(sourceCell, destCell, image):
     destCenterCoordinate = getCoordinateOfCenterOfCell(destCell)
 
     # Draw arrowed line from <sourceCenterCoordinate> to <destCenterCoordinate> in color(rgb(0,0,0)) with thickness <arrowWidthPixels> pixels
-    arrowWidthPixels = 7
+    arrowWidthPixels = 5
     image = cv2.arrowedLine(image, sourceCenterCoordinate , destCenterCoordinate, (160,32,240), arrowWidthPixels)
 
     
@@ -346,9 +346,14 @@ while(True):
     move = getCellFromAlgebricMove(bestMoveString)
     drawArrowFromSourceToDestCell(sourceCell=move[0], destCell=move[1], image=boardImage)
 
+    
+    # resize the image (faced some problem while showing the image in my laptop's display--> problem with display. so resizing the image)
+    boardImage = cv2.resize(boardImage, (500, 500)) 
+
     # display the image with arrow
     cv2.imshow(imagePath, boardImage)
-    
+
+
     # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
     cv2.waitKey(0)
     
