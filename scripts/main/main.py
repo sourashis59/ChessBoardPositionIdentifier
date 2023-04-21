@@ -1,6 +1,7 @@
 # to be able to import modules from this directory, we need to add the path to sys.path
 # so that python can search that path from the imported modules
 import sys
+import time
 sys.path.append("./scripts/modules")
 
 
@@ -24,6 +25,7 @@ from tensorflow.keras.models import Sequential, load_model
 
 from modules.util import *
 from modules.chessEngineWrapper import ChessEngineWrapper
+from modules.imageToFen import ImageToFenConverter
 
 
 
@@ -33,128 +35,12 @@ sourceImagePath = "scripts/main/test/image8.png"
 CHESS_ENGINE_PATH = "scripts/main/chessEngineBin/bluebetafish_64bit_windows.exe"
 
 
-
-
-
-
-
-
-
-
-
-
-
 # emptyNonemptySquareClassifier = pickle.load(open("scripts/main/trainedModels/emptyNonemptySquareClassifier/21-03-2023/trainedModel.p" , 'rb')) 
 emptyNonemptySquareClassifier = load_model("scripts/main/trainedModels/emptyNonemptySquareClassifier/21-03-2023/trainedModelCNN.h5" ) 
-squareTypes =  ['emptySquare', 'nonemptySquare']
-
 blackOrWhitePieceClassifier = pickle.load(open("scripts/main/trainedModels/blackOrWhitePieceClassifier/trainedModel.p" , 'rb'))
-pieceColors = ['white', 'black']
-
 # pieceTypeClassifier = pickle.load(open("scripts/main/trainedModels/pieceTypeClassifier/trainedModel.p" , 'rb'))
 # pieceTypes = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn']
 pieceTypeClassifier = load_model("scripts/main/trainedModels/pieceTypeClassifier/22-03-2023-sparse_categorical_accuracy/trainedModelCNN.h5" )
-pieceTypes = ['bishop', 'king', 'knight', 'pawn', 'queen', 'rook']
-
-
-
-
-
-
-
-
-
-
-def getFenFromImagePath(imagePath):
-    boardImage = Image.open(os.path.join(imagePath) )
-
-    pieces = []
-    board = []
-    squares = getSquaresFromChessBoardImage(boardImage)
-
-    for i in range(len(squares)) :
-        currRow = ""
-        currRowBoard = []
-
-        for j in range(len(squares[i])):
-            data = []
-
-            # convert from PIL.Image to skimage
-            squares[i][j].save("scripts/main/temp/tempSquareImage.png")
-            squareImage = imread("scripts/main/temp/tempSquareImage.png")
-
-            squareImageOpenCV = cv2.imread("scripts/main/temp/tempSquareImage.png")
-            squareImageOpenCV = cv2.cvtColor(squareImageOpenCV, cv2.COLOR_BGR2RGB)
-            squareImageOpenCV = tf.image.resize(squareImageOpenCV, (64, 64)).numpy().astype(int)
-            transformedDataOpenCV = np.expand_dims(squareImageOpenCV/255, 0)
-
-            squareImage = resize(squareImage, (20, 20))
-            if(len(squareImage[0][0]) == 4):
-                squareImage = rgba2rgb(squareImage)
-
-            data.append(squareImage.flatten())
-            data = np.asarray(data)
-
-
-            # check if square contains any piece
-                # check the color and type of the piece
-            if( squareTypes[ np.argmax( emptyNonemptySquareClassifier.predict(transformedDataOpenCV, verbose=0)[0] ) ] == 'emptySquare') :
-                currRow += ( "|    " )
-                currRowBoard.append("NULL")
-                # print("empty")
-            else :
-                currPieceColor = pieceColors[ (blackOrWhitePieceClassifier.predict([data[0]]))[0] ]
-                currPieceType = pieceTypes[ np.argmax( pieceTypeClassifier.predict(transformedDataOpenCV, verbose=0)[0] )  ]
-
-                
-                currPieceString = f"{currPieceColor[0]}"
-                if(currPieceType == 'knight') :
-                    currPieceString += ('n')     
-                    currRowBoard.append('n')
-                else :
-                    currPieceString += (currPieceType[0])
-                    currRowBoard.append(currPieceType[0])
-
-                if(currPieceColor == "white"):
-                    currRowBoard[len(currRowBoard) - 1] = currRowBoard[len(currRowBoard) - 1].upper() 
-
-                currRow += ( "| " + currPieceString + " ")        
-
-                # print(currPieceColor + " " + currPieceType)
-        
-        currRow += '|'
-        pieces.append(currRow  )
-        board.append(currRowBoard)
-
-
-
-    # print("\nPieces : \n")
-    # # print the board
-    # print("-----------------------------------------")
-    # for i in range(len(pieces)) :
-    #     print(pieces[i])
-    #     print("-----------------------------------------")
-
-    # print("\n\n--------------------------------------------------\n")
-
-
-
-
-
-    fenString = boardToFENPieces(board)
-    # print(f"\nfen = {fenString}" )
-    # print(pieces)
-
-    return fenString
-
-
-
-
-
-
-
-
-
 
 
 
@@ -166,6 +52,8 @@ def getFenFromImagePath(imagePath):
 
 
 chessEngine = ChessEngineWrapper(CHESS_ENGINE_PATH)
+imageToFenConverter = ImageToFenConverter(emptyNonemptySquareClassifier, blackOrWhitePieceClassifier, pieceTypeClassifier)
+
 print("\n\nPress \"ctrl + c\" to terminate!!!!!!!\n\n\n")
 while(True):
     sys.stdin.flush()
@@ -176,8 +64,14 @@ while(True):
     currentPlayer = input("Enter current player (w/b) : ")
     moveTime = input("Enter movetime(in ms) : ")
 
-    fenString = getFenFromImagePath(imagePath)  + " " + currentPlayer + " - - "
-    print("\nFEN : " + fenString)
+    startTime = time.process_time()
+    fenString = imageToFenConverter.getFenFromImage(Image.open(os.path.join(imagePath) ))  + " " + currentPlayer + " - - "
+    endTime = time.process_time()
+
+
+    print("\nFEN : " + fenString)   
+    print(f"time taken : {endTime-startTime} seconds\n\n")
+
 
     chessEngine.setposition(fenString)
     # chessEngine.printPosition()

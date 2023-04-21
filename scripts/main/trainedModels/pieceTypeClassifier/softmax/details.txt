@@ -1,0 +1,1 @@
+time taken to test on new data (all lichess_chess_dot_com data and 15000 kaggle data) : 9 minutes

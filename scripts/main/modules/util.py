@@ -43,31 +43,6 @@ def getSquaresFromChessBoardImage(chessBoardImage):
 
 
 
-#
-# * @param pieces squares array from Board object (8*8 matrix)
-# * @returns string representing FEN field for piece position or null
-#
-def boardToFENPieces(pieces) :
-    result = []
-    
-    for i in range(8):
-        for  j in range(8):
-            if (pieces[i][j] != "NULL" ) :
-                result.append(pieces[i][j])
-            elif (len(result) == 0 or not result[len(result) - 1].isdigit()) :
-                result.append("1")
-            else :
-                if (int(result[len(result) - 1]) > 8):
-                    return "NULL"
-                result[len(result) - 1] = str( int(result[len(result) - 1]) + 1 )
-            
-        if (i < 7):
-            result.append("/")
-
-    
-    return ("").join(result)
-
-
 
 
 
