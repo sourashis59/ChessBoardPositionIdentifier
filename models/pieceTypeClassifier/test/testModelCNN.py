@@ -35,6 +35,8 @@ from tensorflow.keras.metrics import Precision, Recall , BinaryAccuracy, SparseC
 
 use_tf_keras_models_evaluate = False
 resizedImageDimension = (64, 64)
+# resizedImageDimension = (50, 50)
+
 #* test without prinitng the wrongly guessed file names
 testWithoutDebugging = True
 
@@ -60,7 +62,7 @@ def getPredictions(batchX, model):
 
     #* it will return batch of predicted probabilities of classes 
     # *verbose = 0 ====> dont print anything while doing prediction
-    pred = classifier.predict(transformedData, verbose=0) 
+    pred = model.predict(batchX, verbose=0) 
 
     predClassIndices = []
     for i in range(len(pred)):

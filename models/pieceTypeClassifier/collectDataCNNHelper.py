@@ -2,11 +2,11 @@
 # to be able to import modules from this directory, we need to add the path to sys.path
 # so that python can search that path from the imported modules
 import sys
-sys.path.append("./scripts/modules")
+sys.path.append("./scripts/main/modules")
 
 from PIL import Image
 import os
-from scripts.main.modules.util import getSquaresFromChessBoardImage, getSquaresFromFenString
+from util import getSquaresFromChessBoardImage, getSquaresFromFenString
 
 
 
@@ -24,8 +24,8 @@ kaggleDataSourcePath = "data/rawData/kaggleData/train"
 
 # maxKaggleDataCount = 8000
 # maxLichessChessdotcomImageCount = 2000
-maxKaggleDataCount = 12000
-maxLichessChessdotcomImageCount = 0
+maxKaggleDataCount = 50
+maxLichessChessdotcomImageCount = 10
 
 
 # =========================================================lichessChessdotcom data=========================================================

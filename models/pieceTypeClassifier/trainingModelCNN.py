@@ -18,6 +18,7 @@ print(f"gpus = {gpus}\n\n")
 
 resizedImageDimension = (64, 64)
 
+
 #* ======================================================================================================================
 #* ====================================================== LOAD DATA =====================================================
 #* ======================================================================================================================
@@ -36,26 +37,49 @@ print("Data prepared...............\n")
 classes = data.class_names
 
 
-## batch contains array of data and labels. (data means rgb image)
+
+
+# # *needed during Augmentation
+# randomCroppingHeightWidthFraction = 0.05
+# data_augmentation = Sequential([
+#     tf.keras.layers.RandomFlip('horizontal'),
+#     tf.keras.layers.RandomRotation(factor=0.03),
+#     # tf.keras.layers.RandomCrop(height= int(resizedImageDimension[0] * (1 - randomCroppingHeightWidthFraction)), width= int(resizedImageDimension[1] * (1 - randomCroppingHeightWidthFraction))),
+#     tf.keras.layers.RandomTranslation(height_factor=0.08, width_factor=0.08),
+#     tf.keras.layers.RandomZoom(0.1)
+# ])
+
+
+
+
+
+# ## batch contains array of data and labels. (data means rgb image)
 # batch = data.as_numpy_iterator().next()
-# # print(batch[1]) #it is labels[]
-# print(batch[0][0].shape)
-# print(batch[0][0])
+# # # print(batch[1]) #it is labels[]
+# # print(batch[0][0].shape)
+# # print(batch[0][0])
 
 # cv2.imwrite("models/emptyNonemptySquareClassifier/test/ultra_test_cv2.png", batch[0][0])
-
 # # tempImage = batch[0][0]
 # tempImage = cv2.imread("models/emptyNonemptySquareClassifier/test/ultra_test_cv2.png")
-# print(tempImage)
+# # print(tempImage)
 # plt.imshow(tempImage)    
 # plt.show()
+
+# for i in range(20):
+#     plt.imshow(data_augmentation([tempImage])[0].numpy().astype("uint8"))
+
+
+
+
 
 
 #* scale the image pixel values from range [0, 255] to [0,1] ==> this range helps the Depp learning model learn faster
 # batch[0] = batch[0] / 255
-
-# x is image, y is label
+#* x is image, y is label
 data = data.map(lambda x,y : (x/255, y)) 
+#* normalization_layer = tf.keras.layers.Rescaling(1./255)
+
 # print(data.as_numpy_iterator().next()[0].max())
 # print(data.as_numpy_iterator().next()[0])
 
@@ -69,11 +93,6 @@ data = data.map(lambda x,y : (x/255, y))
 # print(tempImage)
 # plt.imshow(tempImage)    
 # plt.show()
-
-
-
-
-
 
 
 
@@ -151,8 +170,8 @@ print("\n\n") # for new line
 model.save( os.path.join(trainedModelDestPath, "trainedModelCNN.h5") )
 # model = load_model(trainedModelDestPath)
 
-pickle.dump(history, open( os.path.join(trainedModelDestPath, "history.p") , 'wb'))
-
+# pickle.dump(history.history, open( os.path.join(trainedModelDestPath, "history.h5") , 'wb'))
+np.save(os.path.join(trainedModelDestPath, "history.npy"), history.history)
 
 # #* plot performance
 # fig = plt.figure()

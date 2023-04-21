@@ -40,7 +40,7 @@ emptyNonemptySquareClassifier = load_model("scripts/main/trainedModels/emptyNone
 blackOrWhitePieceClassifier = pickle.load(open("scripts/main/trainedModels/blackOrWhitePieceClassifier/trainedModel.p" , 'rb'))
 # pieceTypeClassifier = pickle.load(open("scripts/main/trainedModels/pieceTypeClassifier/trainedModel.p" , 'rb'))
 # pieceTypes = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn']
-pieceTypeClassifier = load_model("scripts/main/trainedModels/pieceTypeClassifier/22-03-2023-sparse_categorical_accuracy/trainedModelCNN.h5" )
+pieceTypeClassifier = load_model("scripts/main/trainedModels/pieceTypeClassifier/NewTrainingData/trainedModelCNN.h5" )
 
 
 

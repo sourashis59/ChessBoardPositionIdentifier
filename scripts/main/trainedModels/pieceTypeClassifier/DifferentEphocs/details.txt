@@ -1,0 +1,151 @@
+
+
+No of epochs = 7
+
+model  : 
+
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d (Conv2D)             (None, 62, 62, 16)        448       
+
+ max_pooling2d (MaxPooling2D  (None, 31, 31, 16)       0
+ )
+
+
+ max_pooling2d_1 (MaxPooling  (None, 14, 14, 32)       0
+ 2D)
+
+ conv2d_2 (Conv2D)           (None, 12, 12, 16)        4624
+
+ max_pooling2d_2 (MaxPooling  (None, 6, 6, 16)         0
+ 2D)
+
+ flatten (Flatten)           (None, 576)               0
+
+ dense (Dense)               (None, 256)               147712
+
+ dense_1 (Dense)             (None, 6)                 1542
+
+=================================================================
+Total params: 158,966
+Trainable params: 158,966
+Non-trainable params: 0
+_________________________________________________________________
+None
+
+
+
+
+
+Starting training.............................
+Epoch 1/7
+2023-04-21 10:54:42.868544: I tensorflow/stream_executor/cuda/cuda_dnn.cc:384] Loaded cuDNN version 8200
+2836/2836 [==============================] - 189s 66ms/step - loss: 0.0342 - sparse_categorical_accuracy: 0.9892 - val_loss: 5.8371e-05 - val_sparse_categorical_accuracy: 1.0000
+Epoch 2/7
+2836/2836 [==============================] - 82s 29ms/step - loss: 0.0019 - sparse_categorical_accuracy: 0.9996 - val_loss: 0.0153 - val_sparse_categorical_accuracy: 0.9964
+Epoch 3/7
+2836/2836 [==============================] - 84s 30ms/step - loss: 0.0015 - sparse_categorical_accuracy: 0.9997 - val_loss: 8.4854e-05 - val_sparse_categorical_accuracy: 1.0000
+Epoch 4/7
+2836/2836 [==============================] - 89s 31ms/step - loss: 0.0015 - sparse_categorical_accuracy: 0.9997 - val_loss: 0.0395 - val_sparse_categorical_accuracy: 0.9937
+Epoch 5/7
+2836/2836 [==============================] - 82s 29ms/step - loss: 7.0823e-05 - sparse_categorical_accuracy: 1.0000 - val_loss: 3.3581e-06 - val_sparse_categorical_accuracy: 1.0000
+Epoch 6/7
+2836/2836 [==============================] - 88s 31ms/step - loss: 3.4691e-07 - sparse_categorical_accuracy: 1.0000 - val_loss: 1.8400e-06 - val_sparse_categorical_accuracy: 1.0000
+Epoch 7/7
+2836/2836 [==============================] - 102s 36ms/step - loss: 7.9358e-08 - sparse_categorical_accuracy: 1.0000 - val_loss: 1.3166e-06 - val_sparse_categorical_accuracy: 1.0000
+Elapsed time :  416.09375  seconds.
+
+
+In hand calculation : accuracy =  1.0
+Using inbuilt Accuracy() to calculate accuracy: Accuracy = 1.0
+Using inbuilt SparseCategoricalAccuracy() to calculate accuracy: SparseCategoricalAccuracy = 1.0
+
+precision = 1.0, Recall = 1.0,
+
+
+Testing validation loss and accuracy : (from model.evaluate()):
+406/406 [==============================] - 42s 11ms/step - loss: 1.0021e-06 - sparse_categorical_accuracy: 1.0000
+[1.0020861509474344e-06, 1.0]
+
+
+
+
+
+
+================================================
+TESTING ON NEW DATA
+=====================================================================
+Collecting data......................
+2023-04-21 11:11:22.399821: I tensorflow/stream_executor/cuda/cuda_dnn.cc:384] Loaded cuDNN version 8200
+Tested data : 100/5345,   wrong guess : 3
+Tested data : 200/5345,   wrong guess : 3
+Tested data : 300/5345,   wrong guess : 3
+Tested data : 400/5345,   wrong guess : 3
+Tested data : 500/5345,   wrong guess : 3
+Tested data : 600/5345,   wrong guess : 3
+Tested data : 700/5345,   wrong guess : 3
+Tested data : 800/5345,   wrong guess : 3
+Tested data : 900/5345,   wrong guess : 3
+Tested data : 1000/5345,   wrong guess : 4
+Tested data : 1100/5345,   wrong guess : 4
+Tested data : 1200/5345,   wrong guess : 4
+Tested data : 1300/5345,   wrong guess : 4
+Tested data : 1400/5345,   wrong guess : 4
+Tested data : 1500/5345,   wrong guess : 5
+Tested data : 1600/5345,   wrong guess : 5
+Tested data : 1700/5345,   wrong guess : 5
+Tested data : 1800/5345,   wrong guess : 5
+Tested data : 1900/5345,   wrong guess : 5
+Tested data : 2000/5345,   wrong guess : 5
+Tested data : 2100/5345,   wrong guess : 5
+Tested data : 2200/5345,   wrong guess : 5
+Tested data : 2300/5345,   wrong guess : 5
+Tested data : 2400/5345,   wrong guess : 5
+Tested data : 2500/5345,   wrong guess : 7
+Tested data : 2600/5345,   wrong guess : 7
+Tested data : 2700/5345,   wrong guess : 7
+Tested data : 2800/5345,   wrong guess : 7
+Tested data : 2900/5345,   wrong guess : 7
+Tested data : 3000/5345,   wrong guess : 7
+Tested data : 3100/5345,   wrong guess : 7
+Tested data : 3200/5345,   wrong guess : 7
+Tested data : 3300/5345,   wrong guess : 7
+Tested data : 3400/5345,   wrong guess : 7
+Tested data : 3500/5345,   wrong guess : 7
+Tested data : 3600/5345,   wrong guess : 7
+Tested data : 3700/5345,   wrong guess : 7
+Tested data : 3800/5345,   wrong guess : 7
+Tested data : 3900/5345,   wrong guess : 7
+Tested data : 4000/5345,   wrong guess : 7
+Tested data : 4100/5345,   wrong guess : 7
+Tested data : 4200/5345,   wrong guess : 7
+Tested data : 4300/5345,   wrong guess : 7
+Tested data : 4400/5345,   wrong guess : 7
+Tested data : 4500/5345,   wrong guess : 7
+Tested data : 4600/5345,   wrong guess : 7
+Tested data : 4700/5345,   wrong guess : 7
+Tested data : 4800/5345,   wrong guess : 7
+Tested data : 4900/5345,   wrong guess : 7
+Tested data : 5000/5345,   wrong guess : 7
+Tested data : 5100/5345,   wrong guess : 7
+Tested data : 5200/5345,   wrong guess : 7
+Tested data : 5300/5345,   wrong guess : 7
+
+
+In hand calculation : accuracy =  0.9999590729437078
+Using inbuilt Accuracy() to calculate accuracy: Accuracy = 0.9999590516090393
+Using inbuilt SparseCategoricalAccuracy() to calculate accuracy: SparseCategoricalAccuracy = 0.9999590516090393
+
+precision = 0.9999786019325256, Recall = 1.0
+
+
+
+
+
+
+
+
+
+##################################################################################################################################################################

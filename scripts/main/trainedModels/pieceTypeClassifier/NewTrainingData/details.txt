@@ -1,0 +1,34 @@
+
+training data : 
+    maxKaggleDataCount = 13000
+    maxLichessChessdotcomImageCount = 2000
+
+
+While training:
+In hand calculation : accuracy =  1.0
+Using inbuilt Accuracy() to calculate accuracy: Accuracy = 1.0
+Using inbuilt SparseCategoricalAccuracy() to calculate accuracy: SparseCategoricalAccuracy = 1.0
+
+precision = 1.0, Recall = 1.0,
+
+
+Testing validation loss and accuracy : (from model.evaluate()):
+881/881 [==============================] - 80s 10ms/step - loss: 1.1840e-10 - sparse_categorical_accuracy: 1.0000
+[1.1839727809270784e-10, 1.0]
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+On new test data :
+
+Tested data : 5200/5345,   wrong guess : 0
+Tested data : 5300/5345,   wrong guess : 0
+
+
+In hand calculation : accuracy =  1.0
+Using inbuilt Accuracy() to calculate accuracy: Accuracy = 1.0
+Using inbuilt SparseCategoricalAccuracy() to calculate accuracy: SparseCategoricalAccuracy = 1.0
+
+precision = 1.0, Recall = 1.0,
