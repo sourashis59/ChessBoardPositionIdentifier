@@ -1,0 +1,113 @@
+
+model  : 
+
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d (Conv2D)             (None, 62, 62, 16)        448
+
+ max_pooling2d (MaxPooling2D  (None, 31, 31, 16)       0
+ )
+
+ conv2d_1 (Conv2D)           (None, 29, 29, 32)        4640
+
+ max_pooling2d_1 (MaxPooling  (None, 14, 14, 32)       0
+ 2D)
+
+ conv2d_2 (Conv2D)           (None, 12, 12, 16)        4624
+
+ max_pooling2d_2 (MaxPooling  (None, 6, 6, 16)         0
+ 2D)
+
+ flatten (Flatten)           (None, 576)               0
+
+ dense (Dense)               (None, 256)               147712
+
+ dense_1 (Dense)             (None, 2)                 514
+
+=================================================================
+Total params: 157,938
+Trainable params: 157,938
+Non-trainable params: 0
+_________________________________________________________________
+None
+
+
+
+
+
+Starting training.............................
+Epoch 1/20
+2023-04-21 19:27:06.167735: I tensorflow/stream_executor/cuda/cuda_dnn.cc:384] Loaded cuDNN version 8200
+2347/2347 [==============================] - 134s 54ms/step - loss: 0.0102 - sparse_categorical_accuracy: 0.9959 - val_loss: 2.3547e-05 - val_sparse_categorical_accuracy: 1.0000
+Epoch 2/20
+2347/2347 [==============================] - 70s 30ms/step - loss: 7.9185e-06 - sparse_categorical_accuracy: 1.0000 - val_loss: 2.3968e-06 - val_sparse_categorical_accuracy: 1.0000
+Epoch 3/20
+2347/2347 [==============================] - 73s 31ms/step - loss: 1.3562e-06 - sparse_categorical_accuracy: 1.0000 - val_loss: 5.8569e-07 - val_sparse_categorical_accuracy: 1.0000
+Epoch 4/20
+2347/2347 [==============================] - 76s 32ms/step - loss: 3.5077e-07 - sparse_categorical_accuracy: 1.0000 - val_loss: 1.4825e-07 - val_sparse_categorical_accuracy: 1.0000
+Epoch 5/20
+2347/2347 [==============================] - 79s 34ms/step - loss: 9.0319e-08 - sparse_categorical_accuracy: 1.0000 - val_loss: 3.9888e-08 - val_sparse_categorical_accuracy: 1.0000
+Epoch 6/20
+2347/2347 [==============================] - 75s 32ms/step - loss: 2.3905e-08 - sparse_categorical_accuracy: 1.0000 - val_loss: 1.1432e-08 - val_sparse_categorical_accuracy: 1.0000
+Epoch 7/20
+2347/2347 [==============================] - 70s 30ms/step - loss: 6.8426e-09 - sparse_categorical_accuracy: 1.0000 - val_loss: 3.6697e-09 - val_sparse_categorical_accuracy: 1.0000
+Epoch 8/20
+2347/2347 [==============================] - 81s 34ms/step - loss: 2.0872e-09 - sparse_categorical_accuracy: 1.0000 - val_loss: 1.2288e-09 - val_sparse_categorical_accuracy: 1.0000
+Epoch 9/20
+2347/2347 [==============================] - 74s 31ms/step - loss: 6.2220e-10 - sparse_categorical_accuracy: 1.0000 - val_loss: 4.2257e-10 - val_sparse_categorical_accuracy: 1.0000
+Epoch 10/20
+2347/2347 [==============================] - 73s 31ms/step - loss: 0.0128 - sparse_categorical_accuracy: 0.9984 - val_loss: 2.5344e-05 - val_sparse_categorical_accuracy: 1.0000
+Epoch 11/20
+2347/2347 [==============================] - 74s 32ms/step - loss: 5.8881e-06 - sparse_categorical_accuracy: 1.0000 - val_loss: 2.1937e-06 - val_sparse_categorical_accuracy: 1.0000
+Epoch 12/20
+2347/2347 [==============================] - 72s 31ms/step - loss: 1.0484e-06 - sparse_categorical_accuracy: 1.0000 - val_loss: 6.2210e-07 - val_sparse_categorical_accuracy: 1.0000
+Epoch 13/20
+2347/2347 [==============================] - 81s 34ms/step - loss: 3.0267e-07 - sparse_categorical_accuracy: 1.0000 - val_loss: 1.6821e-07 - val_sparse_categorical_accuracy: 1.0000
+Epoch 14/20
+2347/2347 [==============================] - 81s 35ms/step - loss: 0.0015 - sparse_categorical_accuracy: 0.9997 - val_loss: 0.0012 - val_sparse_categorical_accuracy: 0.9996
+Epoch 15/20
+2347/2347 [==============================] - 76s 32ms/step - loss: 5.2839e-05 - sparse_categorical_accuracy: 1.0000 - val_loss: 4.2078e-06 - val_sparse_categorical_accuracy: 1.0000
+Epoch 16/20
+2347/2347 [==============================] - 80s 34ms/step - loss: 2.1690e-06 - sparse_categorical_accuracy: 1.0000 - val_loss: 8.9494e-07 - val_sparse_categorical_accuracy: 1.0000
+Epoch 17/20
+2347/2347 [==============================] - 87s 37ms/step - loss: 4.4090e-07 - sparse_categorical_accuracy: 1.0000 - val_loss: 2.0917e-07 - val_sparse_categorical_accuracy: 1.0000
+Epoch 18/20
+2347/2347 [==============================] - 81s 34ms/step - loss: 1.0916e-07 - sparse_categorical_accuracy: 1.0000 - val_loss: 5.3209e-08 - val_sparse_categorical_accuracy: 1.0000
+Epoch 19/20
+2347/2347 [==============================] - 77s 33ms/step - loss: 2.9470e-08 - sparse_categorical_accuracy: 1.0000 - val_loss: 1.4757e-08 - val_sparse_categorical_accuracy: 1.0000
+Epoch 20/20
+2347/2347 [==============================] - 73s 31ms/step - loss: 8.4045e-09 - sparse_categorical_accuracy: 1.0000 - val_loss: 4.9152e-09 - val_sparse_categorical_accuracy: 1.0000
+Elapsed time :  1117.296875  seconds.
+
+
+
+
+In hand calculation : accuracy =  1.0
+Using inbuilt Accuracy() to calculate accuracy: Accuracy = 1.0
+Using inbuilt SparseCategoricalAccuracy() to calculate accuracy: SparseCategoricalAccuracy = 1.0
+
+precision = 1.0, Recall = 1.0,
+
+
+Testing validation loss and accuracy : (from model.evaluate()):
+336/336 [==============================] - 31s 10ms/step - loss: 3.0052e-09 - sparse_categorical_accuracy: 1.0000
+[3.0051796606755943e-09, 1.0]
+
+
+
+
+
+
+
+
+=============================================================================================================================================
+On new data:
+
+
+In hand calculation : accuracy =  1.0
+Using inbuilt Accuracy() to calculate accuracy: Accuracy = 1.0
+Using inbuilt SparseCategoricalAccuracy() to calculate accuracy: SparseCategoricalAccuracy = 1.0
+
+precision = 1.0, Recall = 1.0,

@@ -13,18 +13,18 @@ from util import getSquaresFromChessBoardImage, getSquaresFromFenString
 
 
 pieceColors = ['blackPiece', 'whitePiece']
-destPath = "data/testData/blackOrWhitePieces"
+destPath = "data/trainingData/blackOrWhitePieces"
 
 
 
 
 lichessChessdotcomSourcePath = "data/rawData/lichess_chess.com_images"
-kaggleDataSourcePath = "data/rawData/kaggleData/test"
+kaggleDataSourcePath = "data/rawData/kaggleData/train"
 
 
 
 
-maxKaggleDataCount = 15000
+maxKaggleDataCount = 8000
 maxLichessChessdotcomImageCount = 2000
 # maxKaggleDataCount = 50
 # maxLichessChessdotcomImageCount = 10
