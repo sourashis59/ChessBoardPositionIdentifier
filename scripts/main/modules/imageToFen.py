@@ -87,8 +87,21 @@ class ImageToFenConverter:
         squareBatch = np.array(squareBatch)                
 
         squareTypePredBatch = self.__emptyNonemptySquareClassifier.predict(squareBatch, verbose=0)
-        pieceColorPredBatch = self.__blackOrWhitePieceClassifier.predict(squareBatch, verbose=0)
-        pieceTypePredBatch = self.__pieceTypeClassifier.predict(squareBatch, verbose=0)
+        
+        
+        # * only store the nonempty-square
+        nonemptySquareBatch = []
+        nonemptySquareInd = [] #* nonemptySquareInd[i] = index of the i-th square in nonemptySquareBatch
+        for i in range(len(squareBatch)):
+            if(squareTypes[ np.argmax( squareTypePredBatch[i] ) ] != 'emptySquare'):
+                nonemptySquareBatch.append(squareBatch[i])
+            nonemptySquareInd.append(len(nonemptySquareBatch) - 1)
+
+        nonemptySquareBatch = np.array(nonemptySquareBatch)
+        
+        
+        pieceColorPredBatch = self.__blackOrWhitePieceClassifier.predict(nonemptySquareBatch, verbose=0)
+        pieceTypePredBatch = self.__pieceTypeClassifier.predict(nonemptySquareBatch, verbose=0)
 
         
         for i in range(len(squares)) :
@@ -101,8 +114,8 @@ class ImageToFenConverter:
                 if( squareTypes[ np.argmax( squareTypePredBatch[currInd] ) ] == 'emptySquare') :
                     currRowBoard.append("NULL")
                 else :
-                    currPieceColor = pieceColors[ np.argmax( pieceColorPredBatch[currInd] ) ]
-                    currPieceType = pieceTypes[ np.argmax( pieceTypePredBatch[currInd] )  ]
+                    currPieceColor = pieceColors[ np.argmax( pieceColorPredBatch[nonemptySquareInd[currInd]] ) ]
+                    currPieceType = pieceTypes[ np.argmax( pieceTypePredBatch[nonemptySquareInd[currInd]] )  ]
 
                     if(currPieceType == 'knight') :
                         currRowBoard.append('n')
@@ -111,7 +124,7 @@ class ImageToFenConverter:
 
                     if(currPieceColor == "white"):
                         currRowBoard[len(currRowBoard) - 1] = currRowBoard[len(currRowBoard) - 1].upper() 
-                        
+
             board.append(currRowBoard)
 
         fenString = self.__boardToFENPieces(board)
