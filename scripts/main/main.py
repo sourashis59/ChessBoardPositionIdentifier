@@ -36,8 +36,9 @@ CHESS_ENGINE_PATH = "scripts/main/chessEngineBin/bluebetafish_64bit_windows.exe"
 
 
 # emptyNonemptySquareClassifier = pickle.load(open("scripts/main/trainedModels/emptyNonemptySquareClassifier/21-03-2023/trainedModel.p" , 'rb')) 
-emptyNonemptySquareClassifier = load_model("scripts/main/trainedModels/emptyNonemptySquareClassifier/21-03-2023/trainedModelCNN.h5" ) 
-blackOrWhitePieceClassifier = pickle.load(open("scripts/main/trainedModels/blackOrWhitePieceClassifier/trainedModel.p" , 'rb'))
+emptyNonemptySquareClassifier = load_model("scripts/main/trainedModels/emptyNonemptySquareClassifier/CNN/trainedModelCNN.h5" ) 
+# blackOrWhitePieceClassifier = pickle.load(open("scripts/main/trainedModels/blackOrWhitePieceClassifier/trainedModel.p" , 'rb'))
+blackOrWhitePieceClassifier = load_model("scripts/main/trainedModels/blackOrWhitePieceClassifier/CNN/trainedModelCNN.h5" ) 
 # pieceTypeClassifier = pickle.load(open("scripts/main/trainedModels/pieceTypeClassifier/trainedModel.p" , 'rb'))
 # pieceTypes = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn']
 pieceTypeClassifier = load_model("scripts/main/trainedModels/pieceTypeClassifier/NewTrainingData/trainedModelCNN.h5" )
@@ -65,7 +66,7 @@ while(True):
     moveTime = input("Enter movetime(in ms) : ")
 
     startTime = time.process_time()
-    fenString = imageToFenConverter.getFenFromImage(Image.open(os.path.join(imagePath) ))  + " " + currentPlayer + " - - "
+    fenString = imageToFenConverter.getFenFromImage(imagePath)  + " " + currentPlayer + " - - "
     endTime = time.process_time()
 
 
@@ -84,20 +85,20 @@ while(True):
 
 
 
-    #*draw arrow on the given image
-    boardImage = cv2.imread(imagePath)
-    move = getCellFromAlgebricMove(bestMoveString)
-    drawArrowFromSourceToDestCell(sourceCell=move[0], destCell=move[1], image=boardImage)
+    # #*draw arrow on the given image
+    # boardImage = cv2.imread(imagePath)
+    # move = getCellFromAlgebricMove(bestMoveString)
+    # drawArrowFromSourceToDestCell(sourceCell=move[0], destCell=move[1], image=boardImage)
 
-    # resize the image (faced some problem while showing the image in my laptop's display--> problem with display. so resizing the image)
-    boardImage = cv2.resize(boardImage, (500, 500)) 
+    # # resize the image (faced some problem while showing the image in my laptop's display--> problem with display. so resizing the image)
+    # boardImage = cv2.resize(boardImage, (500, 500)) 
 
-    #* display the image with arrow
-    cv2.imshow(imagePath, boardImage)
-    #* waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-    cv2.waitKey(0)
-    #* cv2.destroyAllWindows() simply destroys all the windows we created.
-    cv2.destroyAllWindows()
+    # #* display the image with arrow
+    # cv2.imshow(imagePath, boardImage)
+    # #* waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+    # cv2.waitKey(0)
+    # #* cv2.destroyAllWindows() simply destroys all the windows we created.
+    # cv2.destroyAllWindows()
 
 # r1b2bkr/ppp3pp/2n5/3qp3/2B5/8/PPPP1PPP/RNB1K2R w KQkq - 0 1
 # rnbq1bnr/pppkpppp/8/3p4/3P4/8/PPPKPPPP/RNBQ1BNR w - - 2 3

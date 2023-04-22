@@ -66,9 +66,8 @@ class ImageToFenConverter:
         return ("").join(result)
 
 
-    def getFenFromImage(self, boardImage):
-        # boardImage = Image.open(os.path.join(imagePath) )
-
+    def getFenFromImage(self, boardImagePath):
+        boardImage = Image.open(os.path.join(boardImagePath) )
         pieces = []
         board = []
         squares = getSquaresFromChessBoardImage(boardImage)
