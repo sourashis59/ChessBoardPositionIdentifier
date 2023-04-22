@@ -9,6 +9,7 @@ from PIL import Image
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
 from tensorflow.keras.metrics import Precision, Recall , BinaryAccuracy, SparseCategoricalAccuracy, Accuracy
+import pickle
 
 
 gpus = tf.config.experimental.list_physical_devices("GPU")
@@ -17,11 +18,12 @@ print(f"gpus = {gpus}\n\n")
 
 resizedImageDimension = (64, 64)
 
+
 #* ======================================================================================================================
 #* ====================================================== LOAD DATA =====================================================
 #* ======================================================================================================================
 dataPath = os.path.join("data/trainingData/emptyNonemptySquares")
-trainedModelDestPath = os.path.join("models", "emptyNonemptySquareClassifier", "trainedModelCNN.h5")
+trainedModelDestPath = os.path.join("models", "emptyNonemptySquareClassifier")
 
 
 print("\n\nPreparing data...............\n")
@@ -35,26 +37,34 @@ print("Data prepared...............\n")
 classes = data.class_names
 
 
-## batch contains array of data and labels. (data means rgb image)
+
+# ## batch contains array of data and labels. (data means rgb image)
 # batch = data.as_numpy_iterator().next()
-# # print(batch[1]) #it is labels[]
-# print(batch[0][0].shape)
-# print(batch[0][0])
+# # # print(batch[1]) #it is labels[]
+# # print(batch[0][0].shape)
+# # print(batch[0][0])
 
 # cv2.imwrite("models/emptyNonemptySquareClassifier/test/ultra_test_cv2.png", batch[0][0])
-
 # # tempImage = batch[0][0]
 # tempImage = cv2.imread("models/emptyNonemptySquareClassifier/test/ultra_test_cv2.png")
-# print(tempImage)
+# # print(tempImage)
 # plt.imshow(tempImage)    
 # plt.show()
+
+# for i in range(20):
+#     plt.imshow(data_augmentation([tempImage])[0].numpy().astype("uint8"))
+
+
+
+
 
 
 #* scale the image pixel values from range [0, 255] to [0,1] ==> this range helps the Depp learning model learn faster
 # batch[0] = batch[0] / 255
-
-# x is image, y is label
+#* x is image, y is label
 data = data.map(lambda x,y : (x/255, y)) 
+#* normalization_layer = tf.keras.layers.Rescaling(1./255)
+
 # print(data.as_numpy_iterator().next()[0].max())
 # print(data.as_numpy_iterator().next()[0])
 
@@ -68,11 +78,6 @@ data = data.map(lambda x,y : (x/255, y))
 # print(tempImage)
 # plt.imshow(tempImage)    
 # plt.show()
-
-
-
-
-
 
 
 
@@ -114,7 +119,7 @@ model.add(MaxPooling2D())
 
 model.add(Flatten())
 model.add(Dense(256, activation = 'relu'))
-model.add(Dense(len(classes), activation='sigmoid'))
+model.add(Dense(len(classes), activation='softmax'))
 
 model.compile('adam', loss="sparse_categorical_crossentropy", metrics=['sparse_categorical_accuracy'])
 
@@ -147,23 +152,19 @@ print("\n\n") # for new line
 #* ======================================================================================================================
 #* ================================================= SAVE THE MODEL   =================================================
 #* ======================================================================================================================
-model.save( trainedModelDestPath  )
-
+model.save( os.path.join(trainedModelDestPath, "trainedModelCNN.h5") )
 # model = load_model(trainedModelDestPath)
 
+# pickle.dump(history.history, open( os.path.join(trainedModelDestPath, "history.h5") , 'wb'))
+np.save(os.path.join(trainedModelDestPath, "history.npy"), history.history)
 
-
-
-
-
-
-#* plot performance
-fig = plt.figure()
-plt.plot(history.history['loss'], color = 'red', label = 'loss')
-plt.plot(history.history['val_loss'], color='orange', label='val_loss' )
-fig.suptitle('Loss', fontsize = 20)
-plt.legend(loc='upper left')
-plt.show()
+# #* plot performance
+# fig = plt.figure()
+# plt.plot(history.history['loss'], color = 'red', label = 'loss')
+# plt.plot(history.history['val_loss'], color='orange', label='val_loss' )
+# fig.suptitle('Loss', fontsize = 20)
+# plt.legend(loc='upper left')
+# plt.show()
 
 
 
@@ -223,11 +224,3 @@ print("\n\nTesting validation loss and accuracy : (from model.evaluate()): ")
 testingResult = model.evaluate(testData)
 print(testingResult)
 print("\n\n\n\n\n")
-
-
-
-
-
-
-
-

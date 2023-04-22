@@ -2,14 +2,14 @@
 # to be able to import modules from this directory, we need to add the path to sys.path
 # so that python can search that path from the imported modules
 import sys
-sys.path.append("./scripts/modules")
+sys.path.append("./scripts/main/modules")
 
 
 
 
 from PIL import Image
 import os
-from scripts.main.modules.util import getSquaresFromChessBoardImage, getSquaresFromFenString
+from util import getSquaresFromChessBoardImage, getSquaresFromFenString
 import random
 
 
@@ -19,14 +19,14 @@ import random
 
 # collabSourcePath = "/content/drive/MyDrive/ChessBoardStateExtractor"
 
-destPath = "data/testData/emptyNonemptySquareClassifier"
+destPath = "data/testData/emptyNonemptySquare"
 lichessChessdotcomSourcePath = "data/rawData/lichess_chess.com_images"
 kaggleDataSourcePath = "data/rawData/kaggleData/test"
 
 
 
-maxLichessChessdotcomImageCount = 0
-maxKaggleDataCount = 1000
+maxLichessChessdotcomImageCount = 2000
+maxKaggleDataCount = 10000
 
 
 
@@ -59,7 +59,7 @@ for file in os.listdir(sourceDirectory):
     if ( fileName.endswith(".jpg") or fileName.endswith(".png") ) :                 
         # print(os.path.join(fileName))
 
-        print(f"fileName : {fileName}")
+        # print(f"fileName : {fileName}")
 
         currImage = Image.open( os.path.join(sourceDirectory.decode(), fileName ) )
 
@@ -79,10 +79,10 @@ for file in os.listdir(sourceDirectory):
                 # and 2 pawns for each color
                 # and 2 rows of empty squares
                 if ((i == 0 or i == 7) and j <= 4) or ((i == 1 or i == 6) and j <= 1)  :
-                    resizedImage.save(f"{destPath}/nonemptySquare_{imageCount}.png")
+                    resizedImage.save(f"{destPath}/nonemptySquare/{imageCount}.png")
                     imageCount = imageCount + 1
                 elif  (i == 2 or i == 3):
-                    resizedImage.save(f"{destPath}/emptySquare_{imageCount}.png")
+                    resizedImage.save(f"{destPath}/emptySquare/{imageCount}.png")
                     imageCount = imageCount + 1
 
 
@@ -206,11 +206,11 @@ for file in os.listdir(sourceDirectory):
         random.shuffle(emptySquareImages)
 
         for image in emptySquareImages:
-            image.save(f"{destPath}/emptySquare_kaggleData_{imageCount}.png")
+            image.save(f"{destPath}/emptySquare/{imageCount}.png")
             imageCount = imageCount + 1
 
         for image in nonemptySquareImages:
-            image.save(f"{destPath}/nonemptySquare_kaggleData_{imageCount}.png")
+            image.save(f"{destPath}/nonemptySquare/{imageCount}.png")
             imageCount = imageCount + 1
 
 
