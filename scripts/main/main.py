@@ -28,26 +28,15 @@ from modules.chessEngineWrapper import ChessEngineWrapper
 from modules.imageToFen import ImageToFenConverter
 
 
-
-sourceImagePath = "scripts/main/test/image8.png"
+#* scripts/main/test/image1.png
 
 # CHESS_ENGINE_PATH = "scripts/main/chessEngineBin/stockfish_15_x64_avx2.exe"
 CHESS_ENGINE_PATH = "scripts/main/chessEngineBin/bluebetafish_64bit_windows.exe"
 
 
-# emptyNonemptySquareClassifier = pickle.load(open("scripts/main/trainedModels/emptyNonemptySquareClassifier/21-03-2023/trainedModel.p" , 'rb')) 
 emptyNonemptySquareClassifier = load_model("scripts/main/trainedModels/emptyNonemptySquareClassifier/CNN/trainedModelCNN.h5" ) 
-# blackOrWhitePieceClassifier = pickle.load(open("scripts/main/trainedModels/blackOrWhitePieceClassifier/trainedModel.p" , 'rb'))
 blackOrWhitePieceClassifier = load_model("scripts/main/trainedModels/blackOrWhitePieceClassifier/CNN/trainedModelCNN.h5" ) 
-# pieceTypeClassifier = pickle.load(open("scripts/main/trainedModels/pieceTypeClassifier/trainedModel.p" , 'rb'))
-# pieceTypes = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn']
 pieceTypeClassifier = load_model("scripts/main/trainedModels/pieceTypeClassifier/NewTrainingData/trainedModelCNN.h5" )
-
-
-
-# fenString = getFenFromImagePath(sourceImagePath)
-# print("\n\n\nImage path : "  + sourceImagePath)
-# print("Fen : " + fenString)
 
 
 

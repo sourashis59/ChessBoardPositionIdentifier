@@ -22,7 +22,7 @@ from modules.chessEngineWrapper import ChessEngineWrapper
 
 
 squareTypes =  ['emptySquare', 'nonemptySquare']
-pieceColors = ['white', 'black']
+pieceColors = ['black', 'white']
 pieceTypes = ['bishop', 'king', 'knight', 'pawn', 'queen', 'rook']
 
 
@@ -34,7 +34,6 @@ class ImageToFenConverter:
     __blackOrWhitePieceClassifier = None
     __pieceTypeClassifier = None
 
-    # __pieces = np.zeros((8,8))
     # __board = np.zeros((8,8))
 
 
@@ -68,77 +67,35 @@ class ImageToFenConverter:
 
     def getFenFromImage(self, boardImagePath):
         boardImage = Image.open(os.path.join(boardImagePath) )
-        pieces = []
         board = []
         squares = getSquaresFromChessBoardImage(boardImage)
 
         for i in range(len(squares)) :
-            currRow = ""
             currRowBoard = []
-
             for j in range(len(squares[i])):
-                data = []
-
-                # convert from PIL.Image to skimage
-                squares[i][j].save("scripts/main/temp/tempSquareImage.png")
-                squareImage = imread("scripts/main/temp/tempSquareImage.png")
-
+ 
                 # *convert PIL to openCV image
-                # squareImageOpenCV = cv2.cvtColor(np.array(squares[i][j]), cv2.COLOR_RGB2BGR)
-                squareImageOpenCV = cv2.imread("scripts/main/temp/tempSquareImage.png")
+                squareImageOpenCV = cv2.cvtColor(np.array(squares[i][j]), cv2.COLOR_RGB2BGR) #* this is to drop the alpha channel(if any) of the PIL image
                 squareImageOpenCV = cv2.cvtColor(squareImageOpenCV, cv2.COLOR_BGR2RGB)
                 squareImageOpenCV = tf.image.resize(squareImageOpenCV, (64, 64)).numpy().astype(int)
                 transformedDataOpenCV = np.expand_dims(squareImageOpenCV/255, 0)
 
-                squareImage = resize(squareImage, (20, 20))
-                if(len(squareImage[0][0]) == 4):
-                    squareImage = rgba2rgb(squareImage)
-
-                data.append(squareImage.flatten())
-                data = np.asarray(data)
-
-
-                # check if square contains any piece
-                    # check the color and type of the piece
+                #* check if square contains any piece
                 if( squareTypes[ np.argmax( self.__emptyNonemptySquareClassifier.predict(transformedDataOpenCV, verbose=0)[0] ) ] == 'emptySquare') :
-                    currRow += ( "|    " )
                     currRowBoard.append("NULL")
-                    # print("empty")
                 else :
-                    currPieceColor = pieceColors[ (self.__blackOrWhitePieceClassifier.predict([data[0]]))[0] ]
+                    currPieceColor = pieceColors[ np.argmax( self.__blackOrWhitePieceClassifier.predict(transformedDataOpenCV, verbose=0)[0] ) ]
                     currPieceType = pieceTypes[ np.argmax( self.__pieceTypeClassifier.predict(transformedDataOpenCV, verbose=0)[0] )  ]
 
-                    
-                    currPieceString = f"{currPieceColor[0]}"
                     if(currPieceType == 'knight') :
-                        currPieceString += ('n')     
                         currRowBoard.append('n')
                     else :
-                        currPieceString += (currPieceType[0])
                         currRowBoard.append(currPieceType[0])
 
                     if(currPieceColor == "white"):
                         currRowBoard[len(currRowBoard) - 1] = currRowBoard[len(currRowBoard) - 1].upper() 
 
-                    currRow += ( "| " + currPieceString + " ")        
-
-                    # print(currPieceColor + " " + currPieceType)
-            
-            currRow += '|'
-            pieces.append(currRow  )
             board.append(currRowBoard)
-
-
-
-        # print("\nPieces : \n")
-        # # print the board
-        # print("-----------------------------------------")
-        # for i in range(len(pieces)) :
-        #     print(pieces[i])
-        #     print("-----------------------------------------")
-
-        # print("\n\n--------------------------------------------------\n")
-
 
         fenString = self.__boardToFENPieces(board)
         # print(f"\nfen = {fenString}" )
