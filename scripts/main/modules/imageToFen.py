@@ -70,22 +70,39 @@ class ImageToFenConverter:
         board = []
         squares = getSquaresFromChessBoardImage(boardImage)
 
+        #* create batch
+        squareBatch = []
+        #* insert the images in squareBatch
         for i in range(len(squares)) :
-            currRowBoard = []
             for j in range(len(squares[i])):
- 
                 # *convert PIL to openCV image
                 squareImageOpenCV = cv2.cvtColor(np.array(squares[i][j]), cv2.COLOR_RGB2BGR) #* this is to drop the alpha channel(if any) of the PIL image
                 squareImageOpenCV = cv2.cvtColor(squareImageOpenCV, cv2.COLOR_BGR2RGB)
                 squareImageOpenCV = tf.image.resize(squareImageOpenCV, (64, 64)).numpy().astype(int)
-                transformedDataOpenCV = np.expand_dims(squareImageOpenCV/255, 0)
+                squareImageOpenCV = squareImageOpenCV / 255
+                # transformedDataOpenCV = np.expand_dims(squareImageOpenCV, 0)
+
+                squareBatch.append(squareImageOpenCV)
+
+        squareBatch = np.array(squareBatch)                
+
+        squareTypePredBatch = self.__emptyNonemptySquareClassifier.predict(squareBatch, verbose=0)
+        pieceColorPredBatch = self.__blackOrWhitePieceClassifier.predict(squareBatch, verbose=0)
+        pieceTypePredBatch = self.__pieceTypeClassifier.predict(squareBatch, verbose=0)
+
+        
+        for i in range(len(squares)) :
+            currRowBoard = []
+            for j in range(len(squares[i])):
+                # * index of batch of size 64
+                currInd = i * len(squares[i]) + j
 
                 #* check if square contains any piece
-                if( squareTypes[ np.argmax( self.__emptyNonemptySquareClassifier.predict(transformedDataOpenCV, verbose=0)[0] ) ] == 'emptySquare') :
+                if( squareTypes[ np.argmax( squareTypePredBatch[currInd] ) ] == 'emptySquare') :
                     currRowBoard.append("NULL")
                 else :
-                    currPieceColor = pieceColors[ np.argmax( self.__blackOrWhitePieceClassifier.predict(transformedDataOpenCV, verbose=0)[0] ) ]
-                    currPieceType = pieceTypes[ np.argmax( self.__pieceTypeClassifier.predict(transformedDataOpenCV, verbose=0)[0] )  ]
+                    currPieceColor = pieceColors[ np.argmax( pieceColorPredBatch[currInd] ) ]
+                    currPieceType = pieceTypes[ np.argmax( pieceTypePredBatch[currInd] )  ]
 
                     if(currPieceType == 'knight') :
                         currRowBoard.append('n')
@@ -94,7 +111,7 @@ class ImageToFenConverter:
 
                     if(currPieceColor == "white"):
                         currRowBoard[len(currRowBoard) - 1] = currRowBoard[len(currRowBoard) - 1].upper() 
-
+                        
             board.append(currRowBoard)
 
         fenString = self.__boardToFENPieces(board)
